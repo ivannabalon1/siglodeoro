@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grafo de Influencias — Siglo de Oro</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0a0a1a;color:#e0e0e0;overflow:hidden}
+#controls{position:fixed;top:12px;left:12px;z-index:10;background:rgba(20,20,40,0.9);padding:12px;border-radius:8px;font-size:13px;max-width:220px}
+#controls h2{font-size:15px;color:#c9a84c;margin-bottom:8px}
+#controls label{display:block;margin:3px 0;cursor:pointer}
+#controls input[type=checkbox]{margin-right:5px}
+#info{position:fixed;bottom:12px;left:12px;z-index:10;background:rgba(20,20,40,0.95);padding:14px;border-radius:8px;font-size:13px;max-width:350px;display:none;border:1px solid #c9a84c}
+#info h3{color:#c9a84c;margin-bottom:6px}
+#info .campo{color:#888;font-size:11px;margin-bottom:6px}
+#info .innov{color:#ccc;font-size:12px;line-height:1.4}
+canvas{display:block}
+.legend{margin-top:10px;font-size:11px}
+.legend-item{display:flex;align-items:center;gap:5px;margin:2px 0}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.site-nav{background:#1a1510;border-bottom:1px solid #2a2520;padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
+.site-nav .brand{font-family:'Cormorant Garamond',serif;color:#c9a84c;font-size:1.1rem;font-weight:700;text-decoration:none;margin-right:auto}
+.site-nav a{color:#a09080;text-decoration:none;font-size:.82rem;padding:.35rem .7rem;border-radius:6px;transition:all .15s}
+.site-nav a:hover{color:#e8e4dc;background:rgba(201,168,76,.1)}
+.site-nav a.active{color:#c9a84c;background:rgba(201,168,76,.15)}
+@media(max-width:480px){.site-nav{padding:.4rem .8rem;gap:.4rem}.site-nav .brand{font-size:.95rem;width:100%}.site-nav a{font-size:.75rem;padding:.25rem .5rem}}
+
+</style>
+</head>
+<body>
+<nav class="site-nav">
+<a href="index.html" class="brand">Siglo de Oro</a>
+<a href="index.html">Colección</a>
+<a href="cronologia.html">Cronología</a>
+<a href="mapa.html">Mapa</a>
+<a href="grafo.html" class="active">Grafo</a>
+</nav>
+<div id="controls">
+<h2>Grafo de Influencias</h2>
+<div id="filters"></div>
+<div class="legend" id="legend"></div>
+</div>
+<div id="info">
+<h3 id="info-name"></h3>
+<div class="campo" id="info-campo"></div>
+<div class="innov" id="info-innov"></div>
+</div>
+<canvas id="c"></canvas>
+<script>
+const DATA = [{"id": "miguel-de-cervantes", "nombre": "Miguel de Cervantes Saavedra", "anos": "1547-1616", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "Invención de la novela moderna autoconsciente"}, {"id": "lope-de-vega", "nombre": "Lope Félix de Vega Carpio", "anos": "1562-1635", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "Codificación de la 'comedia nueva' española"}, {"id": "francisco-de-quevedo", "nombre": "Francisco de Quevedo y Villegas", "anos": "1580-1645", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "Culminación del conceptismo satírico-moral"}, {"id": "luis-de-gongora", "nombre": "Luis de Góngora y Argote", "anos": "1561-1627", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "Culteranismo: la metáfora como sistema"}, {"id": "calderon-de-la-barca", "nombre": "Pedro Calderón de la Barca", "anos": "1600-1681", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "Teatro filosófico y auto sacramental alegórico pleno"}, {"id": "garcilaso-de-la-vega", "nombre": "Garcilaso de la Vega", "anos": "1501-1536", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "Aclimatación del endecasílabo italianizante al castellano"}, {"id": "fray-luis-de-leon-lit", "nombre": "Fray Luis de León", "anos": "1527-1591", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "Fusión de lírica horaciana y espiritualidad agustiniana"}, {"id": "tirso-de-molina", "nombre": "Tirso de Molina (Gabriel Téllez)", "anos": "1579-1648", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "Creación del mito literario de Don Juan"}, {"id": "mateo-aleman", "nombre": "Mateo Alemán", "anos": "1547-c.1614", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Consolidación de la picaresca como género moral"}, {"id": "alonso-de-ercilla", "nombre": "Alonso de Ercilla y Zúñiga", "anos": "1533-1594", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Épica culta basada en experiencia militar directa"}, {"id": "francisco-de-rojas-zorrilla", "nombre": "Francisco de Rojas Zorrilla", "anos": "1607-1648", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Creación de la comedia de figurón"}, {"id": "juan-ruiz-de-alarcon", "nombre": "Juan Ruiz de Alarcón y Mendoza", "anos": "1581-1639", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Creación de la comedia de carácter"}, {"id": "fernando-de-herrera-lit", "nombre": "Fernando de Herrera", "anos": "1534-1597", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Teoría poética culta y petrarquismo elevado"}, {"id": "fernando-de-rojas", "nombre": "Fernando de Rojas", "anos": "c.1470/76-1541", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "La Celestina: la novela dialogada y la tragicomedia"}, {"id": "jorge-de-montemayor", "nombre": "Jorge de Montemayor", "anos": "c.1520-1561", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Creación de la novela pastoril en castellano"}, {"id": "baltasar-gracian", "nombre": "Baltasar Gracián y Morales", "anos": "1601-1658", "categoria": "Literatura", "tier": 1, "innovacion_titulo": "Teoría del concepto y culminación del conceptismo"}, {"id": "guillen-de-castro", "nombre": "Guillén de Castro y Bellvís", "anos": "1569-1631", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Fuente directa de Le Cid de Corneille"}, {"id": "luis-velez-de-guevara", "nombre": "Luis Vélez de Guevara", "anos": "1579-1644", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Sátira social de El diablo cojuelo"}, {"id": "diego-hurtado-de-mendoza", "nombre": "Diego Hurtado de Mendoza", "anos": "1503/04-1575", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Historiografía tacitista y bibliófilo helenista"}, {"id": "francisco-de-vitoria", "nombre": "Francisco de Vitoria", "anos": "c.1483/1486-1546", "categoria": "Teología y Filosofía Política", "tier": 1, "innovacion_titulo": "Fundación del ius gentium y los derechos de los indios"}, {"id": "domingo-de-soto", "nombre": "Domingo de Soto", "anos": "1494-1560", "categoria": "Teología y Filosofía Política", "tier": 2, "innovacion_titulo": "Precursor de la ley de caída de los cuerpos"}, {"id": "francisco-suarez", "nombre": "Francisco Suárez", "anos": "1548-1617", "categoria": "Teología y Filosofía Política", "tier": 1, "innovacion_titulo": "Soberanía popular y origen del poder"}, {"id": "luis-de-molina", "nombre": "Luis de Molina", "anos": "1535-1600", "categoria": "Teología y Filosofía Política", "tier": 2, "innovacion_titulo": "La 'ciencia media' y la conciliación del libre albedrío"}, {"id": "melchor-cano", "nombre": "Melchor Cano", "anos": "1509-1560", "categoria": "Teología y Filosofía Política", "tier": 2, "innovacion_titulo": "Sistematización metodológica de los 'lugares teológicos'"}, {"id": "juan-de-mariana", "nombre": "Juan de Mariana", "anos": "1536-1624", "categoria": "Teología y Filosofía Política", "tier": 2, "innovacion_titulo": "Tiranicidio legítimo y denuncia de la manipulación monetaria"}, {"id": "martin-de-azpilcueta", "nombre": "Martín de Azpilcueta", "anos": "1492-1586", "categoria": "Teología y Filosofía Política", "tier": 2, "innovacion_titulo": "Primera formulación de la teoría cuantitativa del dinero"}, {"id": "fernando-vazquez-de-menchaca", "nombre": "Fernando Vázquez de Menchaca", "anos": "1512-1569", "categoria": "Derecho/Historia", "tier": 3, "innovacion_titulo": "Defensa temprana de la libertad de los mares"}, {"id": "bartolome-de-medina", "nombre": "Bartolomé de Medina", "anos": "1527-1580", "categoria": "Teología y Filosofía Política", "tier": 2, "innovacion_titulo": "Fundador del probabilismo en teología moral"}, {"id": "teresa-de-jesus", "nombre": "Santa Teresa de Jesús (Teresa Sánchez de Cepeda y Ahumada)", "anos": "1515-1582", "categoria": "Mística y Espiritualidad", "tier": 1, "innovacion_titulo": "Escritura mística autobiográfica en primera persona"}, {"id": "juan-de-la-cruz", "nombre": "San Juan de la Cruz (Juan de Yepes Álvarez)", "anos": "1542-1591", "categoria": "Mística y Espiritualidad", "tier": 1, "innovacion_titulo": "La noche oscura como etapa activa de la contemplación"}, {"id": "juan-de-avila", "nombre": "San Juan de Ávila", "anos": "1499-1569", "categoria": "Mística y Espiritualidad", "tier": 2, "innovacion_titulo": "Maestro espiritual de la mística española y reformador del clero"}, {"id": "bartolome-de-las-casas", "nombre": "Bartolomé de las Casas", "anos": "1484-1566", "categoria": "Derecho/Historia", "tier": 2, "innovacion_titulo": "Defensa sistemática de la humanidad y libertad de los indígenas"}, {"id": "jeronimo-zurita", "nombre": "Jerónimo Zurita", "anos": "1512-1580", "categoria": "Derecho/Historia", "tier": 2, "innovacion_titulo": "Fundador de la historiografía crítica basada en documentos de archivo"}, {"id": "juan-huarte-de-san-juan", "nombre": "Juan Huarte de San Juan", "anos": "1529-1588", "categoria": "Ciencia/Medicina", "tier": 2, "innovacion_titulo": "Precursor de la psicología diferencial y la orientación vocacional"}, {"id": "francisco-hernandez", "nombre": "Francisco Hernández", "anos": "c.1515-1587", "categoria": "Ciencia/Medicina", "tier": 2, "innovacion_titulo": "Primera taxonomía europea de la flora mexicana"}, {"id": "jose-de-acosta", "nombre": "José de Acosta", "anos": "1539/1540-1600", "categoria": "Ciencia/Medicina", "tier": 2, "innovacion_titulo": "Explicación científica global de la naturaleza americana"}, {"id": "antonio-de-nebrija", "nombre": "Antonio de Nebrija", "anos": "1444-1522", "categoria": "Humanismo/Educación", "tier": 2, "innovacion_titulo": "Primera gramática impresa de una lengua romance"}, {"id": "juan-luis-vives", "nombre": "Juan Luis Vives", "anos": "1493-1540", "categoria": "Humanismo/Educación", "tier": 2, "innovacion_titulo": "Primer plan europeo de asistencia social pública organizada"}, {"id": "benito-arias-montano", "nombre": "Benito Arias Montano", "anos": "1527-1598", "categoria": "Humanismo/Educación", "tier": 2, "innovacion_titulo": "Dirección de la Biblia Políglota de Amberes con aparato filológico original"}, {"id": "francisco-sanchez-el-brocense", "nombre": "Francisco Sánchez de las Brozas (El Brocense)", "anos": "1523-1600", "categoria": "Humanismo/Educación", "tier": 3, "innovacion_titulo": "Gramática racionalista precursora de la gramática general"}, {"id": "maria-de-zayas", "nombre": "María de Zayas y Sotomayor", "anos": "1590-después de 1647", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Defensa temprana del derecho femenino al saber"}, {"id": "sor-juana-ines-de-la-cruz", "nombre": "Sor Juana Inés de la Cruz", "anos": "1648-1695", "categoria": "Literatura", "tier": 2, "innovacion_titulo": "Defensa explícita del derecho femenino a la educación"}, {"id": "velazquez-diego", "nombre": "Diego Velázquez", "anos": "1599-1660", "categoria": "Artes Plásticas", "tier": 1, "innovacion_titulo": "Pincelada suelta y perspectiva aérea"}, {"id": "zurbaran-francisco", "nombre": "Francisco de Zurbarán", "anos": "1598-1664", "categoria": "Artes Plásticas", "tier": 1, "innovacion_titulo": "Tenebrismo monástico y bodegón austero"}, {"id": "murillo-bartolome", "nombre": "Bartolomé Esteban Murillo", "anos": "1617-1682", "categoria": "Artes Plásticas", "tier": 1, "innovacion_titulo": "Estilo vaporoso y niños populares"}, {"id": "ribera-jose", "nombre": "José de Ribera (Jusepe de Ribera)", "anos": "1591-1652", "categoria": "Artes Plásticas", "tier": 2, "innovacion_titulo": "Tenebrismo y naturalismo napolitano"}, {"id": "cano-alonso", "nombre": "Alonso Cano", "anos": "1601-1667", "categoria": "Artes Plásticas", "tier": 2, "innovacion_titulo": "Síntesis de pintura, escultura y arquitectura"}, {"id": "el-greco", "nombre": "El Greco (Doménikos Theotokópoulos)", "anos": "1541-1614", "categoria": "Artes Plásticas", "tier": 1, "innovacion_titulo": "Manierismo expresivo y figura elongada"}, {"id": "pacheco-francisco", "nombre": "Francisco Pacheco", "anos": "1564-1638", "categoria": "Artes Plásticas", "tier": 2, "innovacion_titulo": "Tratadista del arte y maestro de Velázquez"}, {"id": "berruguete-alonso", "nombre": "Alonso Berruguete", "anos": "c.1488-1561", "categoria": "Artes Plásticas", "tier": 2, "innovacion_titulo": "Manierismo expresivo en madera policromada"}, {"id": "montanes-juan-martinez", "nombre": "Juan Martínez Montañés", "anos": "1568-1649", "categoria": "Artes Plásticas", "tier": 2, "innovacion_titulo": "Naturalismo sereno en la imaginería policromada"}, {"id": "herrera-juan-de", "nombre": "Juan de Herrera", "anos": "c.1530-1597", "categoria": "Arquitectura", "tier": 2, "innovacion_titulo": "Estilo herreriano: geometría y sobriedad"}, {"id": "victoria-tomas-luis", "nombre": "Tomás Luis de Victoria", "anos": "1548-1611", "categoria": "Música", "tier": 2, "innovacion_titulo": "Polifonía sacra entre Renacimiento y Barroco"}, {"id": "cabezon-antonio-de", "nombre": "Antonio de Cabezón", "anos": "1510-1566", "categoria": "Música", "tier": 2, "innovacion_titulo": "Variación instrumental en la música de tecla"}, {"id": "luis-de-granada", "nombre": "Fray Luis de Granada", "anos": "1504-1588", "categoria": "Mística y Espiritualidad", "tier": 2, "innovacion_titulo": "Prosa ascética para un público universal"}, {"id": "sebastian-de-covarrubias-orozco", "nombre": "Sebastián de Covarrubias Orozco", "anos": "1539-1613", "categoria": "Humanismo/Educación", "tier": 2, "innovacion_titulo": "Creador del primer gran diccionario etimológico del castellano"}, {"id": "solorzano-pereira", "nombre": "Juan de Solórzano Pereira", "anos": "1575-1655", "categoria": "Derecho/Historia", "tier": 2, "innovacion_titulo": "Máxima autoridad jurídica sobre el derecho indiano"}, {"id": "pedro-ribadeneyra", "nombre": "Pedro de Ribadeneyra", "anos": "1527-1611", "categoria": "Teología y Filosofía Política", "tier": 2, "innovacion_titulo": "Biógrafo fundacional de Ignacio de Loyola y apologista antimaquiavélico"}, {"id": "juan-sanchez-cotan", "nombre": "Juan Sánchez Cotán", "anos": "1560–1627", "categoria": "Artes Plásticas", "tier": 2, "innovacion_titulo": "Fundador del bodegón español como género propio"}, {"id": "claudio-coello", "nombre": "Claudio Coello", "anos": "1642–1693", "categoria": "Artes Plásticas", "tier": 2, "innovacion_titulo": "Culminación ilusionista del barroco pictórico madrileño"}, {"id": "luisa-roldan-la-roldana", "nombre": "Luisa Roldán, \"La Roldana\"", "anos": "1652–1706", "categoria": "Artes Plásticas", "tier": 2, "innovacion_titulo": "Primera escultora de cámara documentada en España"}, {"id": "cristobal-de-morales", "nombre": "Cristóbal de Morales", "anos": "c. 1500–1553", "categoria": "Música", "tier": 2, "innovacion_titulo": "Primer compositor español difundido internacionalmente en vida"}, {"id": "francisco-guerrero", "nombre": "Francisco Guerrero", "anos": "1528–1599", "categoria": "Música", "tier": 2, "innovacion_titulo": "Difusión internacional temprana y crónica de viaje a Tierra Santa"}, {"id": "diego-saavedra-fajardo", "nombre": "Diego de Saavedra Fajardo", "anos": "1584-1648", "categoria": "Derecho/Historia", "tier": 2, "innovacion_titulo": "Emblemática política como tratado de razón de Estado"}, {"id": "juan-de-valdes", "nombre": "Juan de Valdés", "anos": "c.1509-1541", "categoria": "Teología y Filosofía Política", "tier": 2, "innovacion_titulo": "Reforma espiritual interior y renovación de la prosa castellana"}, {"id": "pedro-mexia", "nombre": "Pedro Mexía", "anos": "c.1497-1551", "categoria": "Humanismo/Educación", "tier": 2, "innovacion_titulo": "Creación del género de la miscelánea erudita moderna"}, {"id": "diego-de-siloe", "nombre": "Diego de Siloé", "anos": "c.1495-1563", "categoria": "Arquitectura", "tier": 3, "innovacion_titulo": "Implantación del clasicismo renacentista en Andalucía"}, {"id": "juan-gomez-de-mora", "nombre": "Juan Gómez de Mora", "anos": "1586-1648", "categoria": "Arquitectura", "tier": 3, "innovacion_titulo": "Configuración del Madrid barroco de los Austrias"}, {"id": "alfonso-x-el-sabio", "nombre": "Alfonso X el Sabio", "anos": "1221-1284", "categoria": "Literatura", "tier": "anexo", "innovacion_titulo": "Fundador de la prosa castellana de autoridad"}, {"id": "arcipreste-de-hita", "nombre": "Arcipreste de Hita (Juan Ruiz)", "anos": "c.1283-antes de 1351", "categoria": "Literatura", "tier": "anexo", "innovacion_titulo": "Hibridación genérica y ambigüedad irónica"}, {"id": "juan-de-mena", "nombre": "Juan de Mena", "anos": "1411-1456", "categoria": "Literatura", "tier": "anexo", "innovacion_titulo": "Latinización del verso castellano"}, {"id": "marques-de-santillana", "nombre": "Marqués de Santillana (Íñigo López de Mendoza)", "anos": "1398-1458", "categoria": "Literatura", "tier": "anexo", "innovacion_titulo": "Introductor del soneto y la teoría poética vernácula"}, {"id": "jorge-manrique", "nombre": "Jorge Manrique", "anos": "c.1440-1479", "categoria": "Literatura", "tier": "anexo", "innovacion_titulo": "Elegía filosófica despojada de ornato"}, {"id": "don-juan-manuel", "nombre": "Don Juan Manuel", "anos": "1282-1348", "categoria": "Literatura", "tier": "anexo", "innovacion_titulo": "Conciencia autorial y marco narrativo de los exemplum"}, {"id": "pero-lopez-de-ayala", "nombre": "Pero López de Ayala", "anos": "1332-1407", "categoria": "Literatura", "tier": "anexo", "innovacion_titulo": "Historiografía crítica y crónica personal"}, {"id": "sem-tob-de-carrion", "nombre": "Sem Tob de Carrión (Shem Tov ben Isaac Ardutiel)", "anos": "c.1290-c.1369", "categoria": "Literatura", "tier": "anexo", "innovacion_titulo": "Síntesis sapiencial judeo-castellana en verso gnómico"}, {"id": "ramon-llull", "nombre": "Ramon Llull", "anos": "c.1232-1316", "categoria": "Teología y Filosofía Política", "tier": "anexo", "innovacion_titulo": "Sistema lógico combinatorio (Ars Magna)"}, {"id": "alonso-de-madrigal-el-tostado", "nombre": "Alonso de Madrigal, \"El Tostado\"", "anos": "c.1410-1455", "categoria": "Teología y Filosofía Política", "tier": "anexo", "innovacion_titulo": "Enciclopedismo exegético y defensa escrita de la democracia"}, {"id": "isabel-de-villena", "nombre": "Isabel de Villena", "anos": "c.1430-1490", "categoria": "Mística y Espiritualidad", "tier": "anexo", "innovacion_titulo": "Vida de Cristo centrada en figuras femeninas"}, {"id": "precursor_abraham_zacuto", "nombre": "Abraham Zacuto", "anos": "1452-c.1514/1515", "categoria": "Ciencia/Medicina", "tier": "anexo", "innovacion_titulo": "Tablas astronómicas al servicio de la navegación oceánica"}, {"id": "precursor_arnau_de_vilanova", "nombre": "Arnau de Vilanova", "anos": "c.1238-1311", "categoria": "Ciencia/Medicina", "tier": "anexo", "innovacion_titulo": "Síntesis médica puesta al servicio de reyes"}, {"id": "precursor_abulcasis", "nombre": "Abulcasis (Abu al-Qasim al-Zahrawi)", "anos": "c.936-1013", "categoria": "Ciencia/Medicina", "tier": "anexo", "innovacion_titulo": "Enciclopedia quirúrgica con instrumental propio"}, {"id": "precursor_avenzoar", "nombre": "Avenzoar (Ibn Zuhr)", "anos": "c.1073/1095-1161/1162", "categoria": "Ciencia/Medicina", "tier": "anexo", "innovacion_titulo": "Observación clínica frente a la autoridad de Galeno"}, {"id": "precursor_maimonides", "nombre": "Maimónides (Moshé ben Maimón)", "anos": "1135-1204", "categoria": "Ciencia/Medicina", "tier": "anexo", "innovacion_titulo": "Codificación sistemática de la ley junto a la filosofía racional"}, {"id": "precursor_enrique_de_villena", "nombre": "Enrique de Villena", "anos": "c.1384-1434", "categoria": "Humanismo/Educación", "tier": "anexo", "innovacion_titulo": "Traductor pionero de los clásicos al castellano"}, {"id": "bartolome-bermejo", "nombre": "Bartolomé Bermejo", "anos": "c.1440-c.1501", "categoria": "Artes Plásticas", "tier": "anexo", "innovacion_titulo": "Dominio flamenco del óleo en la pintura hispánica"}, {"id": "pedro-berruguete", "nombre": "Pedro Berruguete (\"Berruguete el Viejo\")", "anos": "c.1450-c.1503", "categoria": "Artes Plásticas", "tier": "anexo", "innovacion_titulo": "Puente pictórico entre Urbino y Castilla"}, {"id": "juan-guas", "nombre": "Juan Guas", "anos": "c.1430/33-1496", "categoria": "Arquitectura", "tier": "anexo", "innovacion_titulo": "Creador del lenguaje gótico isabelino"}, {"id": "juan-del-encina", "nombre": "Juan del Encina", "anos": "1468-1529/1530", "categoria": "Música", "tier": "anexo", "innovacion_titulo": "Fundador del teatro pastoril castellano"}, {"id": "francisco-jimenez-de-cisneros", "nombre": "Cardenal Francisco Jiménez de Cisneros", "anos": "1436–1517", "categoria": "Humanismo/Educación", "tier": 1, "innovacion_titulo": "Reforma, educación y filología bíblica"}, {"id": "cristobal-colon", "nombre": "Cristóbal Colón", "anos": "1451–1506", "categoria": "Exploración y Conquista", "tier": 1, "innovacion_titulo": "Apertura de las rutas transatlánticas entre Europa y América"}, {"id": "hernan-cortes", "nombre": "Hernán Cortés", "anos": "1485–1547", "categoria": "Exploración y Conquista", "tier": 1, "innovacion_titulo": "Conquista del Imperio mexica y estrategia de alianzas indígenas"}, {"id": "francisco-pizarro", "nombre": "Francisco Pizarro", "anos": "c. 1478–1541", "categoria": "Exploración y Conquista", "tier": 1, "innovacion_titulo": "Conquista del Imperio inca y control del Perú"}, {"id": "fernando-de-magallanes", "nombre": "Fernando de Magallanes", "anos": "c. 1480–1521", "categoria": "Exploración y Conquista", "tier": 1, "innovacion_titulo": "Primera circunnavegación de la Tierra y descubrimiento del estrecho de Magallanes"}, {"id": "juan-sebastian-elcano", "nombre": "Juan Sebastián Elcano", "anos": "c. 1486-1526", "categoria": "Exploración y Conquista", "tier": 2, "innovacion_titulo": "Culminación de la primera vuelta al mundo por mar"}, {"id": "vasco-nunez-de-balboa", "nombre": "Vasco Núñez de Balboa", "anos": "c. 1475–1519", "categoria": "Exploración y Conquista", "tier": 2, "innovacion_titulo": "Descubrimiento europeo del océano Pacífico"}, {"id": "alvar-nunez-cabeza-de-vaca", "nombre": "Álvar Núñez Cabeza de Vaca", "anos": "c. 1490–c. 1559", "categoria": "Exploración y Conquista", "tier": 2, "innovacion_titulo": "Travesía de Norteamérica y primera etnografía empática de los pueblos indígenas"}, {"id": "francisco-de-orellana", "nombre": "Francisco de Orellana", "anos": "c. 1511–1546", "categoria": "Exploración y Conquista", "tier": 2, "innovacion_titulo": "Primera navegación europea del río Amazonas"}, {"id": "bernal-diaz-del-castillo", "nombre": "Bernal Díaz del Castillo", "anos": "c. 1496-1584", "categoria": "Exploración y Conquista", "tier": 2, "innovacion_titulo": "Crónica de primera mano como testimonio del soldado común"}, {"id": "juan-de-la-cosa", "nombre": "Juan de la Cosa", "anos": "c. 1450-1510", "categoria": "Cartografía y Cosmografía", "tier": 2, "innovacion_titulo": "Primer mapamundi con representación de América"}, {"id": "alonso-de-santa-cruz", "nombre": "Alonso de Santa Cruz", "anos": "1505-1567", "categoria": "Cartografía y Cosmografía", "tier": 3, "innovacion_titulo": "Primer mapa de declinación magnética y atlas insular del mundo"}, {"id": "alvaro-de-bazan", "nombre": "Álvaro de Bazán, I marqués de Santa Cruz", "anos": "1526-1588", "categoria": "Ingeniería Militar y Naval", "tier": 2, "innovacion_titulo": "Revolución en la guerra naval: combate anfibio y uso del galeón"}, {"id": "pedro-menendez-de-aviles", "nombre": "Pedro Menéndez de Avilés", "anos": "1519-1574", "categoria": "Ingeniería Militar y Naval", "tier": 2, "innovacion_titulo": "Fundación de San Agustín y organización del sistema de flotas"}, {"id": "pedro-cieza-de-leon", "nombre": "Pedro Cieza de León", "anos": "c. 1520-1554", "categoria": "Exploración y Conquista", "tier": 2, "innovacion_titulo": "Primera crónica integral del Perú basada en observación directa"}, {"id": "bernardino-de-sahagun", "nombre": "Fray Bernardino de Sahagún", "anos": "1499-1590", "categoria": "Exploración y Conquista", "tier": 1, "innovacion_titulo": "Primer estudio etnográfico sistemático del Nuevo Mundo (Códice Florentino)"}, {"id": "inca-garcilaso-de-la-vega", "nombre": "Inca Garcilaso de la Vega", "anos": "1539-1616", "categoria": "Exploración y Conquista", "tier": 1, "innovacion_titulo": "Primera historiografía mestiza: la civilización inca narrada desde dentro"}, {"id": "felipe-guaman-poma-de-ayala", "nombre": "Felipe Guamán Poma de Ayala", "anos": "c.1535-c.1615", "categoria": "Exploración y Conquista", "tier": 1, "innovacion_titulo": "La crónica visual indígena como testimonio anticolonial"}, {"id": "antonio-perez", "nombre": "Antonio Pérez", "anos": "1540-1611", "categoria": "Pensamiento Político", "tier": 2, "innovacion_titulo": "Las Relaciones: memoria política y construcción de la Leyenda Negra"}, {"id": "arnao-guillen-de-brocar", "nombre": "Arnao Guillén de Brocar", "anos": "c.1460-1523", "categoria": "Imprenta y Edición", "tier": 2, "innovacion_titulo": "La impresión de la Biblia Políglota Complutense, hito de la tipografía renacentista"}, {"id": "juan-cromberger", "nombre": "Juan Cromberger", "anos": "†1540", "categoria": "Imprenta y Edición", "tier": 3, "innovacion_titulo": "La primera imprenta del continente americano"}, {"id": "juanelo-turriano", "nombre": "Juanelo Turriano", "anos": "c.1500-1585", "categoria": "Ciencia/Medicina", "tier": 2, "innovacion_titulo": "El Artificio de Toledo: ingeniería hidráulica renacentista sin precedentes"}, {"id": "precursor_averroes", "nombre": "Averroes (Ibn Rushd)", "anos": "1126-1198", "categoria": "Teología y Filosofía Política", "tier": "anexo", "innovacion_titulo": "El Comentador: puente entre Aristóteles y la escolástica europea"}, {"id": "alonso-de-la-vera-cruz", "nombre": "Fray Alonso de la Vera Cruz", "anos": "c.1507-1584", "categoria": "Humanismo/Educación", "tier": 2, "innovacion_titulo": "Primer filósofo y primer profesor de filosofía occidental en América"}];
+
+const CAT_COLORS = {
+  'Literatura':'#e74c3c','Artes Plásticas':'#e67e22','Teología y Filosofía Política':'#2ecc71',
+  'Exploración y Conquista':'#3498db','Ciencia/Medicina':'#9b59b6','Humanismo/Educación':'#1abc9c',
+  'Derecho/Historia':'#f39c12','Mística y Espiritualidad':'#e91e63','Música':'#00bcd4',
+  'Arquitectura':'#795548','Cartografía y Cosmografía':'#607d8b','Ingeniería Militar y Naval':'#4caf50',
+  'Imprenta y Edición':'#ff5722','Pensamiento Político':'#8bc34a'
+};
+
+// Known influence connections (verified)
+const EDGES = [
+  // Escuela de Salamanca chain
+  ['francisco-de-vitoria','domingo-de-soto'],['francisco-de-vitoria','melchor-cano'],
+  ['domingo-de-soto','luis-de-molina'],['francisco-de-vitoria','francisco-suarez'],
+  ['francisco-suarez','luis-de-molina'],['martin-de-azpilcueta','francisco-de-vitoria'],
+  // Mística
+  ['teresa-de-jesus','juan-de-la-cruz'],['teresa-de-jesus','juan-de-avila'],
+  // Poesía
+  ['garcilaso-de-la-vega','fernando-de-herrera-lit'],['fernando-de-herrera-lit','luis-de-gongora'],
+  // Teatro
+  ['lope-de-vega','tirso-de-molina'],['lope-de-vega','calderon-de-la-barca'],
+  ['lope-de-vega','guillen-de-castro'],['lope-de-vega','juan-ruiz-de-alarcon'],
+  ['lope-de-vega','francisco-de-rojas-zorrilla'],
+  ['guillen-de-castro','lope-de-vega'],
+  // Novela
+  ['miguel-de-cervantes','mateo-aleman'],['fernando-de-rojas','miguel-de-cervantes'],
+  // Precursores → Siglo de Oro
+  ['precursor_averroes','francisco-de-vitoria'],['precursor_averroes','francisco-suarez'],
+  ['precursor_maimonides','francisco-de-vitoria'],
+  ['alfonso-x-el-sabio','antonio-de-nebrija'],
+  ['jorge-manrique','garcilaso-de-la-vega'],
+  ['juan-del-encina','lope-de-rueda'],
+  ['ramon-llull','francisco-de-vitoria'],
+  // Arte
+  ['bartolome-bermejo','pedro-berruguete'],
+  ['el-greco','velazquez-diego'],
+  ['velazquez-diego','zurbaran-francisco'],
+  // Exploración
+  ['cristobal-colon','hernan-cortes'],['cristobal-colon','fernando-de-magallanes'],
+  ['hernan-cortes','francisco-pizarro'],
+  // Cronistas
+  ['bartolome-de-las-casas','bernardino-de-sahagun'],
+  ['francisco-de-vitoria','bartolome-de-las-casas'],
+  // Ciencia
+  ['precursor_abulcasis','andres-laguna'],['precursor_avenzoar','precursor_averroes'],
+  // Humanismo
+  ['antonio-de-nebrija','francisco-jimenez-de-cisneros'],
+  ['juan-luis-vives','antonio-de-nebrija'],
+  // Siglo de Oro → Ilustración (external, dashed)
+  ['francisco-de-vitoria','EXT_grocio'],['francisco-suarez','EXT_descartes'],
+  ['francisco-suarez','EXT_leibniz'],['domingo-de-soto','EXT_galileo'],
+  ['miguel-de-cervantes','EXT_novela_europea'],['baltasar-gracian','EXT_schopenhauer'],
+  ['martin-de-azpilcueta','EXT_economia'],['juan-huarte-de-san-juan','EXT_bacon'],
+  ['juan-luis-vives','EXT_comenius'],['jose-de-acosta','EXT_humboldt'],
+  ['miguel-servet','EXT_harvey'],['bernardino-de-sahagun','EXT_etnografia'],
+];
+
+const EXTERNALS = {
+  'EXT_grocio':{nombre:'Grocio (1625)',x:0,y:0},'EXT_descartes':{nombre:'Descartes (1641)',x:0,y:0},
+  'EXT_leibniz':{nombre:'Leibniz (1663+)',x:0,y:0},'EXT_galileo':{nombre:'Galileo (1589)',x:0,y:0},
+  'EXT_novela_europea':{nombre:'Novela europea',x:0,y:0},'EXT_schopenhauer':{nombre:'Schopenhauer',x:0,y:0},
+  'EXT_economia':{nombre:'Economía moderna',x:0,y:0},'EXT_bacon':{nombre:'Francis Bacon',x:0,y:0},
+  'EXT_comenius':{nombre:'Comenius (1657)',x:0,y:0},'EXT_humboldt':{nombre:'Humboldt (1799)',x:0,y:0},
+  'EXT_harvey':{nombre:'Harvey (1628)',x:0,y:0},'EXT_etnografia':{nombre:'Etnografía moderna',x:0,y:0},
+};
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+resize();
+window.addEventListener('resize',resize);
+
+// Parse birth years
+function birthYear(anos){
+  if(!anos) return 1500;
+  const m = anos.match(/(\d{3,4})/);
+  return m ? parseInt(m[1]) : 1500;
+}
+
+// Create nodes
+const nodes = {};
+const catSet = new Set();
+DATA.forEach(a => {
+  const by = birthYear(a.anos);
+  nodes[a.id] = {
+    ...a, by,
+    x: Math.random()*W*0.7+W*0.15,
+    y: Math.random()*H*0.7+H*0.15,
+    vx:0, vy:0,
+    r: a.tier===1?14:a.tier===2?10:a.tier==='anexo'?7:8,
+    color: CAT_COLORS[a.categoria]||'#999'
+  };
+  catSet.add(a.categoria);
+});
+
+// Add external nodes
+Object.entries(EXTERNALS).forEach(([id,ext]) => {
+  nodes[id] = {id, nombre:ext.nombre, categoria:'Ilustración', tier:'ext', by:1700,
+    x:W*0.85+Math.random()*W*0.1, y:Math.random()*H*0.8+H*0.1,
+    vx:0, vy:0, r:9, color:'#ffd700'};
+});
+
+// Valid edges only
+const validEdges = EDGES.filter(([a,b]) => nodes[a] && nodes[b]);
+
+// Active categories
+const activeCats = {};
+catSet.forEach(c => activeCats[c]=true);
+activeCats['Ilustración']=true;
+
+// Build filters
+const filtersDiv = document.getElementById('filters');
+const legendDiv = document.getElementById('legend');
+[...catSet,'Ilustración'].sort().forEach(cat => {
+  const label = document.createElement('label');
+  const cb = document.createElement('input');
+  cb.type='checkbox';cb.checked=true;
+  cb.addEventListener('change',()=>{activeCats[cat]=cb.checked;});
+  label.appendChild(cb);
+  label.appendChild(document.createTextNode(cat));
+  filtersDiv.appendChild(label);
+  
+  const li = document.createElement('div');li.className='legend-item';
+  const dot = document.createElement('div');dot.className='legend-dot';
+  dot.style.background=cat==='Ilustración'?'#ffd700':(CAT_COLORS[cat]||'#999');
+  li.appendChild(dot);li.appendChild(document.createTextNode(cat));
+  legendDiv.appendChild(li);
+});
+
+// Physics
+let dragging=null, mx=0, my=0, hover=null;
+canvas.addEventListener('mousedown',e=>{
+  const n=findNode(e.offsetX,e.offsetY);
+  if(n){dragging=n;n.fx=n.x;n.fy=n.y;}
+});
+canvas.addEventListener('mousemove',e=>{
+  mx=e.offsetX;my=e.offsetY;
+  if(dragging){dragging.x=dragging.fx=mx;dragging.y=dragging.fy=my;}
+  else{hover=findNode(mx,my);
+    const info=document.getElementById('info');
+    if(hover&&hover.tier!=='ext'){
+      info.style.display='block';
+      document.getElementById('info-name').textContent=hover.nombre;
+      document.getElementById('info-campo').textContent=`${hover.categoria} · ${hover.anos||''}`;
+      document.getElementById('info-innov').textContent=hover.innovacion_titulo||'';
+    }else{info.style.display='none';}
+  }
+});
+canvas.addEventListener('mouseup',()=>{if(dragging){delete dragging.fx;delete dragging.fy;}dragging=null;});
+
+function findNode(x,y){
+  let best=null,bestD=Infinity;
+  Object.values(nodes).forEach(n=>{
+    if(!activeCats[n.categoria])return;
+    const d=Math.hypot(n.x-x,n.y-y);
+    if(d<n.r+5&&d<bestD){best=n;bestD=d;}
+  });
+  return best;
+}
+
+function tick(){
+  const ns=Object.values(nodes).filter(n=>activeCats[n.categoria]);
+  // Repulsion
+  for(let i=0;i<ns.length;i++){
+    for(let j=i+1;j<ns.length;j++){
+      let dx=ns[j].x-ns[i].x, dy=ns[j].y-ns[i].y;
+      let d=Math.max(Math.hypot(dx,dy),1);
+      let f=800/(d*d);
+      ns[i].vx-=dx/d*f;ns[i].vy-=dy/d*f;
+      ns[j].vx+=dx/d*f;ns[j].vy+=dy/d*f;
+    }
+  }
+  // Attraction (edges)
+  validEdges.forEach(([a,b])=>{
+    const na=nodes[a],nb=nodes[b];
+    if(!na||!nb||!activeCats[na.categoria]||!activeCats[nb.categoria])return;
+    let dx=nb.x-na.x,dy=nb.y-na.y,d=Math.hypot(dx,dy);
+    if(d>0){let f=(d-120)*0.005;na.vx+=dx/d*f;na.vy+=dy/d*f;nb.vx-=dx/d*f;nb.vy-=dy/d*f;}
+  });
+  // Center gravity
+  ns.forEach(n=>{n.vx+=(W/2-n.x)*0.0005;n.vy+=(H/2-n.y)*0.0005;});
+  // Apply
+  ns.forEach(n=>{
+    if(n.fx!==undefined){n.x=n.fx;n.y=n.fy;n.vx=0;n.vy=0;return;}
+    n.vx*=0.85;n.vy*=0.85;
+    n.x+=n.vx;n.y+=n.vy;
+    n.x=Math.max(20,Math.min(W-20,n.x));
+    n.y=Math.max(20,Math.min(H-20,n.y));
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  // Edges
+  validEdges.forEach(([a,b])=>{
+    const na=nodes[a],nb=nodes[b];
+    if(!na||!nb||!activeCats[na.categoria]||!activeCats[nb.categoria])return;
+    ctx.beginPath();ctx.moveTo(na.x,na.y);ctx.lineTo(nb.x,nb.y);
+    const isExt=a.startsWith('EXT')||b.startsWith('EXT');
+    ctx.strokeStyle=isExt?'rgba(255,215,0,0.3)':'rgba(255,255,255,0.12)';
+    ctx.lineWidth=isExt?1.5:0.8;
+    if(isExt){ctx.setLineDash([4,4]);}else{ctx.setLineDash([]);}
+    ctx.stroke();ctx.setLineDash([]);
+    // Arrow
+    const angle=Math.atan2(nb.y-na.y,nb.x-na.x);
+    const mx2=(na.x+nb.x)/2,my2=(na.y+nb.y)/2;
+    ctx.beginPath();
+    ctx.moveTo(mx2+6*Math.cos(angle-0.4),my2+6*Math.sin(angle-0.4));
+    ctx.lineTo(mx2,my2);
+    ctx.lineTo(mx2+6*Math.cos(angle+0.4),my2+6*Math.sin(angle+0.4));
+    ctx.strokeStyle=isExt?'rgba(255,215,0,0.5)':'rgba(255,255,255,0.2)';
+    ctx.stroke();
+  });
+  // Nodes
+  const ns=Object.values(nodes).filter(n=>activeCats[n.categoria]);
+  ns.forEach(n=>{
+    const isHover=hover===n;
+    ctx.beginPath();ctx.arc(n.x,n.y,n.r+(isHover?3:0),0,Math.PI*2);
+    ctx.fillStyle=n.color;ctx.globalAlpha=isHover?1:0.85;ctx.fill();
+    ctx.globalAlpha=1;
+    if(n.tier===1||n.tier==='ext'||isHover){
+      ctx.strokeStyle=n.tier==='ext'?'#ffd700':'#fff';ctx.lineWidth=isHover?2:1;ctx.stroke();
+    }
+    // Label
+    if(n.tier===1||n.tier==='ext'||isHover){
+      const short=n.nombre.split(' ').slice(-1)[0];
+      ctx.font=`${isHover?'bold ':''}${n.tier===1||isHover?'12':'10'}px sans-serif`;
+      ctx.fillStyle='#fff';ctx.textAlign='center';
+      ctx.fillText(short,n.x,n.y-n.r-5);
+    }
+  });
+  requestAnimationFrame(()=>{tick();draw();});
+}
+tick();tick();tick();tick();tick();// warm up
+draw();
+</script>
+</body>
+</html>

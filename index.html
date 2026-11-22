@@ -81,9 +81,24 @@
     .modal-inner{padding:1.1rem;}
     table.obras-tbl{font-size:.74rem;}
   }
+
+.site-nav{background:#1a1510;border-bottom:1px solid #2a2520;padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
+.site-nav .brand{font-family:'Cormorant Garamond',serif;color:#c9a84c;font-size:1.1rem;font-weight:700;text-decoration:none;margin-right:auto}
+.site-nav a{color:#a09080;text-decoration:none;font-size:.82rem;padding:.35rem .7rem;border-radius:6px;transition:all .15s}
+.site-nav a:hover{color:#e8e4dc;background:rgba(201,168,76,.1)}
+.site-nav a.active{color:#c9a84c;background:rgba(201,168,76,.15)}
+@media(max-width:480px){.site-nav{padding:.4rem .8rem;gap:.4rem}.site-nav .brand{font-size:.95rem;width:100%}.site-nav a{font-size:.75rem;padding:.25rem .5rem}}
+
 </style>
 </head>
 <body>
+<nav class="site-nav">
+<a href="index.html" class="brand">Siglo de Oro</a>
+<a href="index.html" class="active">Colección</a>
+<a href="cronologia.html">Cronología</a>
+<a href="mapa.html">Mapa</a>
+<a href="grafo.html">Grafo</a>
+</nav>
 <header>
   <h1>Siglo de Oro</h1>
   <p class="motto">Voces verificadas de un siglo irrepetible</p>
