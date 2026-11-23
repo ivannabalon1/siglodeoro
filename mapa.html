@@ -3,39 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mapa de Nacimientos — Colecciones Nabalón: Siglo de Oro</title>
+<title>Mapa de Nacimientos — Legado Vivo · 1532 · 2032: Siglo de Oro</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0f1114;color:#e8e0d4;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;height:100vh;width:100vw}
-#header{position:fixed;top:0;left:0;right:0;z-index:100;background:linear-gradient(180deg,rgba(15,17,20,.97),rgba(15,17,20,.7));padding:12px 20px;text-align:center;pointer-events:none}
-#header h1{font-size:clamp(14px,2.5vw,22px);font-weight:300;letter-spacing:2px;color:#c9a84c;text-transform:uppercase}
-#header .sub{font-size:11px;color:#8a8070;margin-top:2px;letter-spacing:1px}
+body{background:#0A0A0A;color:#F0E6D0;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;height:100vh;width:100vw}
+#header{position:fixed;top:0;left:0;right:0;z-index:100;background:linear-gradient(180deg,rgba(10,10,10,.97),rgba(10,10,10,.7));padding:12px 20px;text-align:center;pointer-events:none}
+#header h1{font-size:clamp(14px,2.5vw,22px);font-weight:300;letter-spacing:2px;color:#F1BF00;text-transform:uppercase}
+#header .sub{font-size:11px;color:#6B5D4D;margin-top:2px;letter-spacing:1px}
 #map-container{width:100%;height:100%;position:relative;overflow:hidden;cursor:grab}
 #map-container.dragging{cursor:grabbing}
 #map-svg{position:absolute;transform-origin:0 0}
-.land{fill:#1a1d22;stroke:#2a2d35;stroke-width:.5}
-.water{fill:#0f1114}
+.land{fill:#1A1510;stroke:rgba(170,21,27,0.15);stroke-width:.5}
+.water{fill:#0A0A0A}
 .author-dot{cursor:pointer;transition:r .2s,opacity .2s}
 .author-dot:hover{opacity:1!important}
-.cluster-ring{fill:none;stroke:#c9a84c;stroke-width:1;stroke-dasharray:3 2;opacity:.4}
-#tooltip{position:fixed;display:none;background:rgba(20,22,28,.95);border:1px solid #c9a84c;border-radius:6px;padding:10px 14px;max-width:280px;z-index:200;pointer-events:none;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,.6)}
-#tooltip .tt-name{color:#c9a84c;font-weight:600;font-size:14px}
-#tooltip .tt-years{color:#8a8070;font-size:11px;margin-top:2px}
-#tooltip .tt-cat{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;margin-top:4px;color:#fff}
-#tooltip .tt-place{color:#b0a898;font-size:12px;margin-top:4px}
-#tooltip .tt-campo{color:#9a9080;font-size:11px;margin-top:2px}
-#legend{position:fixed;bottom:12px;left:12px;z-index:100;background:rgba(15,17,20,.9);border:1px solid #2a2d35;border-radius:8px;padding:10px 14px;font-size:11px}
-#legend h3{color:#c9a84c;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.leg-item{display:flex;align-items:center;gap:6px;margin:3px 0;color:#a09888}
+.cluster-ring{fill:none;stroke:#F1BF00;stroke-width:1;stroke-dasharray:3 2;opacity:.4}
+#tooltip{position:fixed;display:none;background:rgba(10,10,10,.95);border:1px solid #F1BF00;border-radius:0;padding:10px 14px;max-width:280px;z-index:200;pointer-events:none;font-size:13px;box-shadow:none}
+#tooltip .tt-name{color:#F1BF00;font-weight:600;font-size:14px}
+#tooltip .tt-years{color:#6B5D4D;font-size:11px;margin-top:2px}
+#tooltip .tt-cat{display:inline-block;padding:2px 8px;border-radius:0;font-size:10px;margin-top:4px;color:#fff}
+#tooltip .tt-place{color:#6B5D4D;font-size:12px;margin-top:4px}
+#tooltip .tt-campo{color:#6B5D4D;font-size:11px;margin-top:2px}
+#legend{position:fixed;bottom:12px;left:12px;z-index:100;background:rgba(10,10,10,.9);border:1px solid rgba(170,21,27,0.15);border-radius:0;padding:10px 14px;font-size:11px}
+#legend h3{color:#F1BF00;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.leg-item{display:flex;align-items:center;gap:6px;margin:3px 0;color:#6B5D4D}
 .leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 #controls{position:fixed;bottom:12px;right:12px;z-index:100;display:flex;flex-direction:column;gap:6px}
-#controls button{width:36px;height:36px;border-radius:6px;border:1px solid #2a2d35;background:rgba(15,17,20,.9);color:#c9a84c;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-#controls button:hover{background:#1a1d22;border-color:#c9a84c}
-#stats{position:fixed;top:60px;right:12px;z-index:100;background:rgba(15,17,20,.9);border:1px solid #2a2d35;border-radius:8px;padding:8px 12px;font-size:11px;color:#8a8070}
-#region-tabs{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:4px;background:rgba(15,17,20,.9);border:1px solid #2a2d35;border-radius:20px;padding:4px}
-.rtab{padding:4px 12px;border-radius:16px;font-size:11px;color:#8a8070;cursor:pointer;border:none;background:transparent;letter-spacing:.5px}
-.rtab.active{background:#c9a84c;color:#0f1114}
-.rtab:hover:not(.active){color:#c9a84c}
+#controls button{width:36px;height:36px;border-radius:0;border:1px solid rgba(170,21,27,0.15);background:rgba(10,10,10,.9);color:#F1BF00;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#controls button:hover{background:#12100C;border-color:#F1BF00}
+#stats{position:fixed;top:60px;right:12px;z-index:100;background:rgba(10,10,10,.9);border:1px solid rgba(170,21,27,0.15);border-radius:0;padding:8px 12px;font-size:11px;color:#6B5D4D}
+#region-tabs{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:4px;background:rgba(10,10,10,.9);border:1px solid rgba(170,21,27,0.15);border-radius:0;padding:4px}
+.rtab{padding:4px 12px;border-radius:0;font-size:11px;color:#6B5D4D;cursor:pointer;border:none;background:transparent;letter-spacing:.5px}
+.rtab.active{background:#AA151B;color:#F0E6D0}
+.rtab:hover:not(.active){color:#F1BF00}
 @media(max-width:600px){
   #legend{font-size:10px;padding:6px 10px;max-width:140px}
   #stats{font-size:10px;top:50px;right:6px;padding:4px 8px}
@@ -43,18 +43,21 @@ body{background:#0f1114;color:#e8e0d4;font-family:'Segoe UI',system-ui,sans-seri
   .rtab{padding:3px 8px;font-size:10px}
 }
 
-.site-nav{background:#1a1510;border-bottom:1px solid #2a2520;padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
-.site-nav .brand{font-family:'Cormorant Garamond',serif;color:#c9a84c;font-size:1.1rem;font-weight:700;text-decoration:none;margin-right:auto}
-.site-nav a{color:#a09080;text-decoration:none;font-size:.82rem;padding:.35rem .7rem;border-radius:6px;transition:all .15s}
-.site-nav a:hover{color:#e8e4dc;background:rgba(201,168,76,.1)}
-.site-nav a.active{color:#c9a84c;background:rgba(201,168,76,.15)}
+.flag-bar{height:4px;background:linear-gradient(180deg,#AA151B 33%,#F1BF00 33% 66%,#AA151B 66%)}
+.site-nav{background:#0A0A0A;border-bottom:1px solid rgba(170,21,27,0.15);padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
+.site-nav .brand{font-family:'DM Serif Display',serif;color:#F0E6D0;font-size:1.1rem;font-weight:400;text-decoration:none;margin-right:auto}
+.site-nav .brand-date{font-family:Inter,sans-serif;font-size:.6rem;color:#AA151B;font-weight:700;letter-spacing:.15em;margin-left:.5rem}
+.site-nav a{color:#6B5D4D;text-decoration:none;font-size:.82rem;padding:.35rem .7rem;transition:all .15s}
+.site-nav a:hover{color:#F0E6D0}
+.site-nav a.active{color:#F1BF00}
 @media(max-width:480px){.site-nav{padding:.4rem .8rem;gap:.4rem}.site-nav .brand{font-size:.95rem;width:100%}.site-nav a{font-size:.75rem;padding:.25rem .5rem}}
 
 </style>
 </head>
 <body>
+<div class="flag-bar"></div>
 <nav class="site-nav">
-<a href="index.html" class="brand">Siglo de Oro</a>
+<a href="index.html" class="brand">Siglo de Oro <span class="brand-date">1532·2032</span></a>
 <a href="index.html">Colección</a>
 <a href="cronologia.html">Cronología</a>
 <a href="mapa.html" class="active">Mapa</a>
@@ -62,7 +65,7 @@ body{background:#0f1114;color:#e8e0d4;font-family:'Segoe UI',system-ui,sans-seri
 </nav>
 <div id="header">
   <h1>Mapa de Nacimientos</h1>
-  <div class="sub">Colecciones Nabalón · Siglo de Oro · 100 autores</div>
+  <div class="sub">Legado Vivo · 1532 · 2032 · Siglo de Oro · 100 autores</div>
 </div>
 
 <div id="region-tabs">
@@ -96,9 +99,9 @@ body{background:#0f1114;color:#e8e0d4;font-family:'Segoe UI',system-ui,sans-seri
   <div class="leg-item"><div class="leg-dot" style="background:#3498db"></div>Derecho / Historia</div>
   <div class="leg-item"><div class="leg-dot" style="background:#e84393"></div>Música</div>
   <div class="leg-item"><div class="leg-dot" style="background:#fd79a8"></div>Arquitectura</div>
-  <div class="leg-item" style="margin-top:6px;border-top:1px solid #2a2d35;padding-top:4px"><div class="leg-dot" style="background:#c9a84c;width:14px;height:14px"></div>Tier 1</div>
-  <div class="leg-item"><div class="leg-dot" style="background:#c9a84c;width:10px;height:10px"></div>Tier 2</div>
-  <div class="leg-item"><div class="leg-dot" style="background:#c9a84c;width:7px;height:7px"></div>Precursor</div>
+  <div class="leg-item" style="margin-top:6px;border-top:1px solid rgba(170,21,27,0.15);padding-top:4px"><div class="leg-dot" style="background:#F1BF00;width:14px;height:14px"></div>Tier 1</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#F1BF00;width:10px;height:10px"></div>Tier 2</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#F1BF00;width:7px;height:7px"></div>Precursor</div>
 </div>
 
 <div id="controls">
@@ -471,13 +474,13 @@ function render(){
 function drawDot(g,x,y,a){
   const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
   const r=a.tier===1?6:a.tier===2?4:(a.tier===3?3:3);
-  const color=CAT_COLORS[a.cat]||'#c9a84c';
+  const color=CAT_COLORS[a.cat]||'#F1BF00';
   dot.setAttribute('cx',x);
   dot.setAttribute('cy',y);
   dot.setAttribute('r',r);
   dot.setAttribute('fill',color);
   dot.setAttribute('opacity',a.tier==='anexo'?0.6:0.85);
-  dot.setAttribute('stroke',a.tier===1?'#c9a84c':'none');
+  dot.setAttribute('stroke',a.tier===1?'#F1BF00':'none');
   dot.setAttribute('stroke-width',a.tier===1?'1.5':'0');
   dot.setAttribute('class','author-dot');
 
@@ -495,7 +498,7 @@ function showTooltip(e,a){
   tt.querySelector('.tt-years').textContent=a.y;
   const catEl=tt.querySelector('.tt-cat');
   catEl.textContent=a.cat;
-  catEl.style.background=CAT_COLORS[a.cat]||'#c9a84c';
+  catEl.style.background=CAT_COLORS[a.cat]||'#F1BF00';
   tt.querySelector('.tt-place').textContent='📍 '+a.place;
   tt.querySelector('.tt-campo').textContent=a.campo;
   tt.style.display='block';
