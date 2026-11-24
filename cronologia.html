@@ -75,9 +75,15 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
 .tooltip .tt-innov-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:.2rem;font-weight:600}
 .tooltip .tt-innov{font-size:.78rem;color:var(--text);line-height:1.4}
 
-.prec-year{font-size:.58rem;color:var(--gold-dim)}
-.prec-title{font-size:.65rem;color:var(--text-dim);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prec-autor{font-size:.58rem;color:var(--text-muted)}
+.prec-section{padding:1rem 0;border-bottom:1px solid var(--border)}
+.prec-section-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--gold);margin-bottom:.6rem;padding-left:.5rem;border-left:2px solid var(--gold)}
+.prec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.3rem .8rem}
+.prec-chip{display:flex;align-items:baseline;gap:.4rem;padding:.25rem .4rem;cursor:pointer;transition:background .15s}
+.prec-chip:hover{background:var(--bg3)}
+.prec-year{font-size:.58rem;color:var(--gold-dim);flex-shrink:0;min-width:28px}
+.prec-title{font-size:.65rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prec-autor{font-size:.58rem;color:var(--text-muted);flex-shrink:0}
+@media(max-width:600px){.prec-grid{grid-template-columns:1fr}}
 
 footer{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.7rem;border-top:1px solid var(--border)}
 
@@ -220,26 +226,49 @@ function renderTimeline() {
   tl.innerHTML = '';
 
   const filtered = DATA.filter(m => activeCategories.has(m.categoria) && activeTiers.has(String(m.tier)));
-  
-  // Group by decade
+
+  // Split precursors from main timeline
+  const precursors = filtered.filter(m => m.is_precursor);
+  const main = filtered.filter(m => !m.is_precursor);
+
+  // Render compact precursors section
+  if (precursors.length > 0) {
+    const precSection = document.createElement('div');
+    precSection.className = 'prec-section';
+    let precHtml = `<div class="prec-section-title">Precursores · ${precursors.length} hitos antes de 1478</div><div class="prec-grid">`;
+    precursors.sort((a,b) => a.year - b.year).forEach(m => {
+      precHtml += `<div class="prec-chip" data-idx="${DATA.indexOf(m)}">
+        <span class="prec-year">${m.year}</span>
+        <span class="prec-autor">${escHtml(m.autor)}</span>
+        <span class="prec-title">— ${escHtml(m.innovacion || m.titulo)}</span>
+      </div>`;
+    });
+    precHtml += '</div>';
+    precSection.innerHTML = precHtml;
+    tl.appendChild(precSection);
+  }
+
+  // Group main entries by decade
   const byDecade = {};
-  filtered.forEach(m => {
+  main.forEach(m => {
     const dec = Math.floor(m.year / 10) * 10;
     if (!byDecade[dec]) byDecade[dec] = [];
     byDecade[dec].push(m);
   });
-  
-  ERAS.forEach(era => {
+
+  // Only render eras that have main (non-precursor) content
+  const mainEras = ERAS.filter(era => era.start >= 1470);
+  mainEras.forEach(era => {
     const eraEl = document.createElement('div');
     eraEl.className = 'era';
     eraEl.innerHTML = `<div class="era-label">${era.label}</div><div class="decades"></div>`;
     const decadesEl = eraEl.querySelector('.decades');
-    
+
     for (let d = era.start; d < era.end; d += 10) {
       const items = byDecade[d] || [];
       const decEl = document.createElement('div');
       decEl.className = 'decade';
-      
+
       let html = `<div class="decade-label">${d}s</div><div class="ms-list">`;
       items.forEach(m => {
         const tierClass = m.tier === 1 ? 't1' : m.tier === 2 ? 't2' : 'ta';
@@ -257,12 +286,12 @@ function renderTimeline() {
       decEl.innerHTML = html;
       decadesEl.appendChild(decEl);
     }
-    
+
     tl.appendChild(eraEl);
   });
-  
-  // Attach events
-  tl.querySelectorAll('.ms-item').forEach(el => {
+
+  // Attach events to both ms-items and prec-chips
+  tl.querySelectorAll('.ms-item, .prec-chip').forEach(el => {
     const idx = +el.dataset.idx;
     const m = DATA[idx];
     el.addEventListener('mouseenter', (e) => showTooltip(e, m));
