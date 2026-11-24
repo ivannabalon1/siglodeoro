@@ -58,7 +58,11 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
 .ms-content{flex:1;min-width:0}
 .ms-year{font-size:.6rem;color:var(--gold-dim);font-weight:600;letter-spacing:.03em}
 .ms-title{font-size:.72rem;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ms-title::before{content:'¿Qué cambió? ';font-size:.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
 .ms-autor{font-size:.6rem;color:var(--text-muted);font-style:italic;margin-top:1px}
+.ms-autor::before{content:'¿Quién? ';font-style:normal;font-size:.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.ms-ambito{font-size:.58rem;color:var(--text-dim);margin-top:2px;letter-spacing:.02em}
+.ms-ambito::before{content:'Ámbito: ';font-size:.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
 
 /* Tooltip */
 .tooltip{display:none;position:fixed;z-index:100;background:var(--bg3);border:1px solid var(--gold);
@@ -71,13 +75,11 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
 .tooltip .tt-innov-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:.2rem;font-weight:600}
 .tooltip .tt-innov{font-size:.78rem;color:var(--text);line-height:1.4}
 
-.precursors-section{padding:1rem 1.5rem;border-bottom:1px solid var(--border)}
-.precursors-section h2{font-family:'DM Serif Display',serif;color:var(--gold);font-size:1.1rem;margin-bottom:.6rem}
-.precursors-grid{display:flex;flex-wrap:wrap;gap:.4rem}
-.prec-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .5rem;border-radius:0;
-  background:var(--bg3);border:1px solid var(--border);cursor:pointer;transition:border-color .15s}
-.prec-chip:hover{border-color:var(--gold)}
-.prec-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.tier-filter{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;padding:.6rem 1rem;border-bottom:1px solid var(--border)}
+.tier-btn{padding:.3rem .8rem;font-size:.72rem;font-weight:600;letter-spacing:.04em;border:1px solid var(--border);background:var(--bg3);color:var(--text-dim);cursor:pointer;transition:all .15s;text-transform:uppercase}
+.tier-btn:hover{border-color:var(--gold);color:var(--text)}
+.tier-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(241,191,0,.08)}
+.tier-btn.dimmed{opacity:.25}
 .prec-year{font-size:.58rem;color:var(--gold-dim)}
 .prec-title{font-size:.65rem;color:var(--text-dim);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .prec-autor{font-size:.58rem;color:var(--text-muted)}
@@ -89,7 +91,6 @@ footer{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.7rem;
   .header h1{font-size:1.4rem}
   .decade{min-width:120px}
   .tooltip{max-width:260px}
-  .precursors-grid{gap:.3rem}
 }
 
 .flag-bar{height:4px;background:linear-gradient(180deg,#AA151B 33%,#F1BF00 33% 66%,#AA151B 66%)}
@@ -111,6 +112,7 @@ footer{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.7rem;
 <a href="cronologia.html" class="active">Cronología</a>
 <a href="mapa.html">Mapa</a>
 <a href="grafo.html">Grafo</a>
+<a href="innovaciones.html">Innovaciones</a>
 </nav>
 <div class="header">
   <h1>Cronología Visual</h1>
@@ -119,21 +121,20 @@ footer{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.7rem;
 
 <div class="legend" id="legend"></div>
 
-<div class="precursors-section" id="precursors">
-  <h2>Precursores</h2>
-  <div class="precursors-grid" id="prec-grid"></div>
-</div>
+<div class="tier-filter" id="tier-filter"></div>
 
 <div class="tl-wrap">
   <div class="timeline" id="timeline"></div>
 </div>
 
 <div class="tooltip" id="tooltip">
-  <div class="tt-title" id="tt-title"></div>
-  <div class="tt-autor" id="tt-autor"></div>
   <div class="tt-year" id="tt-year"></div>
-  <div class="tt-innov-label">Qué cambió</div>
+  <div class="tt-innov-label">¿Qué cambió?</div>
   <div class="tt-innov" id="tt-innov"></div>
+  <div class="tt-innov-label" style="margin-top:.4rem">¿Quién?</div>
+  <div class="tt-autor" id="tt-autor"></div>
+  <div class="tt-innov-label" style="margin-top:.4rem">Ámbito</div>
+  <div class="tt-title" id="tt-title"></div>
 </div>
 
 <footer>Cronología de hitos verificados del Siglo de Oro español y sus precursores — Legado Vivo · 1532 · 2032, noviembre 2026</footer>
@@ -147,12 +148,26 @@ function getColor(cat) {
   return CAT_COLORS[cat] || '#888';
 }
 
-// Separate precursors and core
-const precursors = DATA.filter(m => m.is_precursor);
-const core = DATA.filter(m => !m.is_precursor);
-
-// Active category filter
+// Active filters
 let activeCategories = new Set(Object.keys(CAT_COLORS));
+let activeTiers = new Set(['1','2','3','anexo']);
+
+// Build tier filter
+const tierFilterEl = document.getElementById('tier-filter');
+const TIER_LABELS = {1:'Tier 1',2:'Tier 2',3:'Tier 3','anexo':'Precursores'};
+Object.entries(TIER_LABELS).forEach(([tier,label]) => {
+  const btn = document.createElement('button');
+  btn.className = 'tier-btn active';
+  btn.textContent = label;
+  btn.dataset.tier = tier;
+  btn.addEventListener('click', () => {
+    const t = String(tier);
+    if(activeTiers.has(t)){activeTiers.delete(t);btn.classList.add('dimmed');btn.classList.remove('active');}
+    else{activeTiers.add(t);btn.classList.remove('dimmed');btn.classList.add('active');}
+    renderTimeline();
+  });
+  tierFilterEl.appendChild(btn);
+});
 
 // Build legend
 const legend = document.getElementById('legend');
@@ -170,7 +185,6 @@ cats.forEach(cat => {
       item.classList.remove('dimmed');
     }
     renderTimeline();
-    renderPrecursors();
   });
   legend.appendChild(item);
 });
@@ -183,10 +197,10 @@ const ttYear = document.getElementById('tt-year');
 const ttInnov = document.getElementById('tt-innov');
 
 function showTooltip(e, m) {
-  ttTitle.textContent = m.titulo;
-  ttAutor.textContent = m.autor;
   ttYear.textContent = m.year;
-  ttInnov.textContent = m.innovacion || 'Contribución al Siglo de Oro';
+  ttInnov.textContent = m.innovacion || m.titulo;
+  ttAutor.textContent = m.autor;
+  ttTitle.textContent = m.categoria;
   tooltip.classList.add('show');
   positionTooltip(e);
 }
@@ -211,8 +225,11 @@ document.addEventListener('mousemove', (e) => {
   if (tooltip.classList.contains('show')) positionTooltip(e);
 });
 
-// Era definitions
+// Era definitions (including precursors)
 const ERAS = [
+  { label: 'Hispanorromanos', start: 0, end: 500 },
+  { label: 'Al-Ándalus y Sefarad', start: 500, end: 1200 },
+  { label: 'Baja Edad Media', start: 1200, end: 1470 },
   { label: 'Renacimiento Temprano', start: 1470, end: 1520 },
   { label: 'Renacimiento Pleno', start: 1520, end: 1560 },
   { label: 'Siglo de Oro — Apogeo', start: 1560, end: 1620 },
@@ -223,8 +240,8 @@ const ERAS = [
 function renderTimeline() {
   const tl = document.getElementById('timeline');
   tl.innerHTML = '';
-  
-  const filtered = core.filter(m => activeCategories.has(m.categoria));
+
+  const filtered = DATA.filter(m => activeCategories.has(m.categoria) && activeTiers.has(String(m.tier)));
   
   // Group by decade
   const byDecade = {};
@@ -252,8 +269,9 @@ function renderTimeline() {
           <span class="ms-dot ${tierClass}" style="background:${getColor(m.categoria)}"></span>
           <div class="ms-content">
             <div class="ms-year">${m.year}</div>
-            <div class="ms-title">${escHtml(m.titulo)}</div>
+            <div class="ms-title">${escHtml(m.innovacion || m.titulo)}</div>
             <div class="ms-autor">${escHtml(m.autor)}</div>
+            <div class="ms-ambito">${escHtml(m.categoria)}</div>
           </div>
         </div>`;
       });
@@ -272,37 +290,6 @@ function renderTimeline() {
     el.addEventListener('mouseenter', (e) => showTooltip(e, m));
     el.addEventListener('mouseleave', hideTooltip);
     el.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(e, m); });
-  });
-}
-
-function renderPrecursors() {
-  const grid = document.getElementById('prec-grid');
-  grid.innerHTML = '';
-  const filtered = precursors.filter(m => activeCategories.has(m.categoria));
-  
-  // Group by era
-  const ancient = filtered.filter(m => m.year < 500);
-  const medieval = filtered.filter(m => m.year >= 500 && m.year < 1200);
-  const late = filtered.filter(m => m.year >= 1200);
-  
-  [
-    { label: 'Hispanorromanos', items: ancient },
-    { label: 'Al-Ándalus y Sefarad', items: medieval },
-    { label: 'Baja Edad Media', items: late }
-  ].forEach(group => {
-    if (group.items.length === 0) return;
-    group.items.forEach(m => {
-      const chip = document.createElement('div');
-      chip.className = 'prec-chip';
-      chip.innerHTML = `<span class="prec-dot" style="background:${getColor(m.categoria)}"></span>
-        <span class="prec-year">${m.year < 0 ? Math.abs(m.year) + ' a.C.' : m.year}</span>
-        <span class="prec-title">${escHtml(m.titulo)}</span>
-        <span class="prec-autor">${escHtml(m.autor)}</span>`;
-      chip.addEventListener('mouseenter', (e) => showTooltip(e, m));
-      chip.addEventListener('mouseleave', hideTooltip);
-      chip.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(e, m); });
-      grid.appendChild(chip);
-    });
   });
 }
 
@@ -332,7 +319,7 @@ document.addEventListener('touchend', () => {
 });
 
 renderTimeline();
-renderPrecursors();
+// precursors now integrated in timeline
 </script>
 </body>
 </html>
