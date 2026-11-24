@@ -75,11 +75,6 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
 .tooltip .tt-innov-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:.2rem;font-weight:600}
 .tooltip .tt-innov{font-size:.78rem;color:var(--text);line-height:1.4}
 
-.tier-filter{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;padding:.6rem 1rem;border-bottom:1px solid var(--border)}
-.tier-btn{padding:.3rem .8rem;font-size:.72rem;font-weight:600;letter-spacing:.04em;border:1px solid var(--border);background:var(--bg3);color:var(--text-dim);cursor:pointer;transition:all .15s;text-transform:uppercase}
-.tier-btn:hover{border-color:var(--gold);color:var(--text)}
-.tier-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(241,191,0,.08)}
-.tier-btn.dimmed{opacity:.25}
 .prec-year{font-size:.58rem;color:var(--gold-dim)}
 .prec-title{font-size:.65rem;color:var(--text-dim);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .prec-autor{font-size:.58rem;color:var(--text-muted)}
@@ -121,8 +116,6 @@ footer{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.7rem;
 
 <div class="legend" id="legend"></div>
 
-<div class="tier-filter" id="tier-filter"></div>
-
 <div class="tl-wrap">
   <div class="timeline" id="timeline"></div>
 </div>
@@ -152,22 +145,7 @@ function getColor(cat) {
 let activeCategories = new Set(Object.keys(CAT_COLORS));
 let activeTiers = new Set(['1','2','3','anexo']);
 
-// Build tier filter
-const tierFilterEl = document.getElementById('tier-filter');
-const TIER_LABELS = {1:'Tier 1',2:'Tier 2',3:'Tier 3','anexo':'Precursores'};
-Object.entries(TIER_LABELS).forEach(([tier,label]) => {
-  const btn = document.createElement('button');
-  btn.className = 'tier-btn active';
-  btn.textContent = label;
-  btn.dataset.tier = tier;
-  btn.addEventListener('click', () => {
-    const t = String(tier);
-    if(activeTiers.has(t)){activeTiers.delete(t);btn.classList.add('dimmed');btn.classList.remove('active');}
-    else{activeTiers.add(t);btn.classList.remove('dimmed');btn.classList.add('active');}
-    renderTimeline();
-  });
-  tierFilterEl.appendChild(btn);
-});
+// Tier filter removed — all tiers always visible
 
 // Build legend
 const legend = document.getElementById('legend');
