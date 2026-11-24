@@ -133,7 +133,7 @@
   .ediciones-tbl th{text-align:left;color:var(--cuero);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:.4rem .3rem;border-bottom:1px solid var(--borde)}
   .ediciones-tbl td{padding:.5rem .3rem;border-bottom:1px solid var(--borde);color:var(--marfil);vertical-align:top}
   .ediciones-price{color:var(--gualda);font-weight:600;white-space:nowrap}
-  .ediciones-close{position:absolute;top:.8rem;right:.8rem;background:none;border:1px solid var(--borde);color:var(--marfil);width:30px;height:30px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+  .ediciones-close{position:absolute;top:.8rem;right:.8rem;background:var(--superficie);border:1px solid var(--borde);color:var(--marfil);width:44px;height:44px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
   .ediciones-close:hover{border-color:var(--rojo)}
   /* Reused libros styles for private collection rows in dialog */
   .libros-row{display:flex;gap:.5rem;align-items:baseline;padding:.35rem 0;border-bottom:1px solid var(--borde);font-size:.82rem}
@@ -269,7 +269,7 @@
   <h1>Siglo de Oro</h1>
   <div class="motto"><span>1532 · 2032</span></div>
   <p class="subtitle">100 autores verificados — de Cervantes a Averroes. Cada ficha cita fuentes reales.</p>
-  <p class="hero-claim">"España ya cambió el mundo una vez."</p>
+  <p class="hero-claim">"España fue fundamental para concebir el mundo que conocemos hoy."</p>
 </header>
 <div class="controls">
   <input id="q" type="text" placeholder="Buscar por nombre, obra, campo, época…">
@@ -776,8 +776,8 @@ const COLECCION_PRIVADA = {
   "francisco-de-quevedo": [{titulo:"Título de Hábito de Caballero de la Orden de Santiago",año:1626,nota:"Manuscrito original firmado por Felipe IV y Quevedo"}],
   "juan-luis-vives": [{titulo:"Diálogos",año:1788,nota:"Dos ediciones: 1788 y 1759"}],
   "jose-de-acosta": [{titulo:"Historia Natural y Moral de las Indias",año:"s.XVI",nota:"Reimpresión de la primera edición"}],
-  "seneca": [{titulo:"Tragedias de Séneca — colección de 21 piezas",año:"1524–1750",nota:"Incluye edición incunable. 21 piezas en total"}],
-  "ciceron": [{titulo:"Opera / Obras completas",año:1539,nota:"4 piezas, incluyendo Opera 1539"}]
+  "precursor_seneca": [{titulo:"Tragedias de Séneca — colección de 21 piezas",año:"1524–1750",nota:"Incluye edición incunable. 21 piezas en total"}],
+  "precursor_ciceron": [{titulo:"Opera / Obras completas",año:1539,nota:"4 piezas, incluyendo Opera 1539"}]
 };
 
 // renderLibros removed — editions now integrated into Obras tab

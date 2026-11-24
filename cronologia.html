@@ -22,10 +22,11 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
 .header .sub{font-size:clamp(.75rem,2vw,.95rem);color:var(--text-dim);font-weight:300;letter-spacing:.08em;text-transform:uppercase}
 
 .legend{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;padding:.8rem 1rem;border-bottom:1px solid var(--border)}
-.legend-item{display:flex;align-items:center;gap:.3rem;font-size:.68rem;color:var(--text-dim);cursor:pointer;transition:opacity .2s;padding:.15rem .4rem;border-radius:0}
+.legend-item{display:flex;align-items:center;gap:.3rem;font-size:.68rem;color:var(--text-dim);cursor:pointer;transition:opacity .2s;padding:.15rem .4rem;border-radius:0;min-height:32px}
 .legend-item:hover{background:var(--bg3)}
+.legend-item:active{background:rgba(170,21,27,.1)}
 .legend-item.dimmed{opacity:.2}
-.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
 .tl-wrap{overflow-x:auto;overflow-y:visible;padding:1rem 0 2rem;-webkit-overflow-scrolling:touch;
   scrollbar-width:thin;scrollbar-color:var(--gold-dim) var(--bg2)}
@@ -49,8 +50,9 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
 .ms-item{display:flex;align-items:flex-start;gap:.4rem;padding:.3rem .4rem;border-radius:0;cursor:pointer;
   transition:background .15s;position:relative}
 .ms-item:hover{background:rgba(170,21,27,.08)}
+.ms-item:active{background:rgba(170,21,27,.15)}
 
-.ms-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ms-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
 .ms-dot.t1{width:11px;height:11px;box-shadow:none}
 .ms-dot.t2{width:9px;height:9px}
 .ms-dot.ta{width:6px;height:6px;opacity:.7}
@@ -75,14 +77,18 @@ h1,h2,h3{font-family:'DM Serif Display',serif}
 .tooltip .tt-innov-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:.2rem;font-weight:600}
 .tooltip .tt-innov{font-size:.78rem;color:var(--text);line-height:1.4}
 
+.prec-link-top{text-align:center;padding:.8rem 0;border-bottom:1px solid var(--border)}
+.prec-link-top a{color:var(--gold);font-size:.82rem;text-decoration:none;font-weight:500;transition:color .15s}
+.prec-link-top a:hover{color:var(--text)}
 .prec-section{padding:1rem 0;border-bottom:1px solid var(--border)}
 .prec-section-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--gold);margin-bottom:.6rem;padding-left:.5rem;border-left:2px solid var(--gold)}
 .prec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.3rem .8rem}
-.prec-chip{display:flex;align-items:baseline;gap:.4rem;padding:.25rem .4rem;cursor:pointer;transition:background .15s}
+.prec-chip{display:flex;align-items:baseline;gap:.4rem;padding:.4rem .5rem;cursor:pointer;transition:background .15s;min-height:36px}
 .prec-chip:hover{background:var(--bg3)}
-.prec-year{font-size:.58rem;color:var(--gold-dim);flex-shrink:0;min-width:28px}
-.prec-title{font-size:.65rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prec-autor{font-size:.58rem;color:var(--text-muted);flex-shrink:0}
+.prec-chip:active{background:rgba(170,21,27,.1)}
+.prec-year{font-size:.68rem;color:var(--gold-dim);flex-shrink:0;min-width:32px}
+.prec-title{font-size:.72rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prec-autor{font-size:.68rem;color:var(--text-muted);flex-shrink:0}
 @media(max-width:600px){.prec-grid{grid-template-columns:1fr}}
 
 footer{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.7rem;border-top:1px solid var(--border)}
@@ -236,11 +242,11 @@ const ERAS = [
   { label: 'Hispanorromanos', start: 0, end: 500 },
   { label: 'Al-Ándalus y Sefarad', start: 500, end: 1200 },
   { label: 'Baja Edad Media', start: 1200, end: 1470 },
-  { label: 'Renacimiento Temprano', start: 1470, end: 1520 },
-  { label: 'Renacimiento Pleno', start: 1520, end: 1560 },
+  { label: 'Comienzo del Siglo de Oro', start: 1470, end: 1520 },
+  { label: 'Siglo de Oro — Expansión', start: 1520, end: 1560 },
   { label: 'Siglo de Oro — Apogeo', start: 1560, end: 1620 },
-  { label: 'Barroco', start: 1620, end: 1700 },
-  { label: 'Tardío', start: 1700, end: 1750 },
+  { label: 'Siglo de Oro — Barroco', start: 1620, end: 1700 },
+  { label: 'Siglo de Oro — Tardío', start: 1700, end: 1750 },
 ];
 
 function renderTimeline() {
@@ -253,21 +259,13 @@ function renderTimeline() {
   const precursors = filtered.filter(m => m.is_precursor);
   const main = filtered.filter(m => !m.is_precursor);
 
-  // Render compact precursors section
+  // Render precursors section (collapsed by default, at the end)
   if (precursors.length > 0) {
-    const precSection = document.createElement('div');
-    precSection.className = 'prec-section';
-    let precHtml = `<div class="prec-section-title">Precursores · ${precursors.length} hitos antes de 1478</div><div class="prec-grid">`;
-    precursors.sort((a,b) => a.year - b.year).forEach(m => {
-      precHtml += `<div class="prec-chip" data-idx="${DATA.indexOf(m)}">
-        <span class="prec-year">${m.year}</span>
-        <span class="prec-autor">${escHtml(m.autor)}</span>
-        <span class="prec-title">— ${escHtml(m.innovacion || m.titulo)}</span>
-      </div>`;
-    });
-    precHtml += '</div>';
-    precSection.innerHTML = precHtml;
-    tl.appendChild(precSection);
+    // Add "Ver precursores" link at the top of timeline
+    const precLink = document.createElement('div');
+    precLink.className = 'prec-link-top';
+    precLink.innerHTML = `<a href="#" onclick="event.preventDefault();document.getElementById('prec-section').style.display='block';document.getElementById('prec-section').scrollIntoView({behavior:'smooth'});this.parentElement.style.display='none';">◂ Ver ${precursors.length} precursores (antes de 1478)</a>`;
+    tl.appendChild(precLink);
   }
 
   // Group main entries by decade
@@ -311,6 +309,26 @@ function renderTimeline() {
 
     tl.appendChild(eraEl);
   });
+
+  // Render precursors section at the bottom (hidden by default)
+  if (precursors.length > 0) {
+    const precSection = document.createElement('div');
+    precSection.id = 'prec-section';
+    precSection.className = 'prec-section';
+    precSection.style.display = 'none';
+    let precHtml = `<div class="prec-section-title">Precursores · ${precursors.length} hitos antes de 1478</div><div class="prec-grid">`;
+    precursors.sort((a,b) => a.year - b.year).forEach(m => {
+      precHtml += `<div class="prec-chip" data-idx="${DATA.indexOf(m)}">
+        <span class="prec-year">${m.year}</span>
+        <span class="prec-autor">${escHtml(m.autor)}</span>
+        <span class="prec-title">— ${escHtml(m.innovacion || m.titulo)}</span>
+      </div>`;
+    });
+    precHtml += '</div>';
+    precHtml += '<div style="text-align:center;padding:1rem 0"><a href="#" style="color:var(--gold);font-size:.8rem;text-decoration:none" onclick="event.preventDefault();this.closest(\'.prec-section\').style.display=\'none\';document.querySelector(\'.prec-link-top\').style.display=\'block\';window.scrollTo({top:0,behavior:\'smooth\'})">▴ Volver al Siglo de Oro</a></div>';
+    precSection.innerHTML = precHtml;
+    tl.appendChild(precSection);
+  }
 
   // Attach events to both ms-items and prec-chips
   tl.querySelectorAll('.ms-item, .prec-chip').forEach(el => {
