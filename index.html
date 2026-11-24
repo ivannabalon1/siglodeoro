@@ -116,21 +116,29 @@
 
   .placeholder{color:var(--cuero);font-style:italic;font-size:.85rem}
 
-  /* Libros tab */
-  .libros-section{margin-top:.5rem}
-  .libros-privada{border-left:2px solid var(--gualda);padding:.6rem .8rem;margin-bottom:1rem;background:rgba(241,191,0,0.04)}
-  .libros-privada-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gualda);font-weight:700;margin-bottom:.3rem}
+  /* Editions bar in Obras tab */
+  .ediciones-bar{display:flex;gap:1.2rem;align-items:center;margin-top:1rem;padding-top:.8rem;border-top:1px solid var(--borde)}
+  .ediciones-link{color:var(--rojo);text-decoration:none;font-size:.82rem;font-weight:600;cursor:pointer;transition:color .15s}
+  .ediciones-link:hover{color:var(--gualda)}
+  .ediciones-privada-link{color:var(--gualda)}
+  .ediciones-privada-link:hover{color:var(--marfil)}
+  .ediciones-none{font-size:.8rem;color:var(--cuero)}
+  /* Editions overlay dialog */
+  .ediciones-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1100;align-items:center;justify-content:center;padding:1rem}
+  .ediciones-dialog{background:var(--superficie);border:1px solid var(--borde);max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:1.5rem;position:relative}
+  .ediciones-dialog-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--marfil);font-weight:400;margin-bottom:1rem;padding-left:.8rem;border-left:3px solid var(--rojo)}
+  .ediciones-tbl{width:100%;border-collapse:collapse;font-size:.8rem}
+  .ediciones-tbl th{text-align:left;color:var(--cuero);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:.4rem .3rem;border-bottom:1px solid var(--borde)}
+  .ediciones-tbl td{padding:.5rem .3rem;border-bottom:1px solid var(--borde);color:var(--marfil);vertical-align:top}
+  .ediciones-price{color:var(--gualda);font-weight:600;white-space:nowrap}
+  .ediciones-close{position:absolute;top:.8rem;right:.8rem;background:none;border:1px solid var(--borde);color:var(--marfil);width:30px;height:30px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+  .ediciones-close:hover{border-color:var(--rojo)}
+  /* Reused libros styles for private collection rows in dialog */
   .libros-row{display:flex;gap:.5rem;align-items:baseline;padding:.35rem 0;border-bottom:1px solid var(--borde);font-size:.82rem}
   .libros-row:last-child{border-bottom:none}
   .libros-year{color:var(--rojo);font-weight:600;min-width:38px;font-size:.78rem}
   .libros-title{flex:1;color:var(--marfil);line-height:1.3}
   .libros-title em{color:var(--cuero);font-style:normal;font-size:.75rem}
-  .libros-price{color:var(--gualda);font-weight:600;white-space:nowrap;font-size:.8rem}
-  .libros-seller{font-size:.72rem;color:var(--cuero);margin-left:.3rem}
-  .libros-link{color:var(--rojo);text-decoration:none;font-size:.75rem;white-space:nowrap}
-  .libros-link:hover{text-decoration:underline}
-  .libros-disponibles-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cuero);font-weight:600;margin:.8rem 0 .4rem}
-  .libros-empty{font-size:.82rem;color:var(--cuero);font-style:italic}
   /* Viewer modal for external links */
   #viewer{position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;display:none;background:rgba(0,0,0,.85)}
   #viewer.open{display:flex;flex-direction:column}
@@ -319,6 +327,9 @@ function renderInnovacion(a){
 }
 
 function renderObras(a){
+  const slug = a.id || a.nombre.split('(')[0].trim().toLowerCase().replace(/\s+/g,'-').replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/ñ/g,'n');
+  const venta = LIBROS_VENTA[slug] || [];
+  const privada = COLECCION_PRIVADA[slug] || [];
   let html = '';
   if((a.obras_detalladas||[]).length){
     const rows = a.obras_detalladas.map(o => {
@@ -332,7 +343,19 @@ function renderObras(a){
   } else {
     html = '<p class="placeholder">Catálogo de obras en proceso de investigación.</p>';
   }
-  // Book purchase links removed — now in dedicated "Libros" tab
+  // Editions row
+  html += '<div class="ediciones-bar">';
+  if(venta.length){
+    html += `<a href="#" class="ediciones-link" onclick="event.preventDefault();showEdicionesDialog('venta','${slug}')">Disponibles (${venta.length})</a>`;
+  } else {
+    html += '<span class="ediciones-none">Ediciones disponibles: —</span>';
+  }
+  if(privada.length){
+    html += `<a href="#" class="ediciones-link ediciones-privada-link" onclick="event.preventDefault();showEdicionesDialog('privada','${slug}')">Colección privada: Sí</a>`;
+  } else {
+    html += '<span class="ediciones-none">Colección privada: No</span>';
+  }
+  html += '</div>';
   return html;
 }
 
@@ -685,43 +708,38 @@ const COLECCION_PRIVADA = {
   "ciceron": [{titulo:"Opera / Obras completas",año:1539,nota:"4 piezas, incluyendo Opera 1539"}]
 };
 
-function renderLibros(a){
-  const slug = a.id || a.nombre.split('(')[0].trim().toLowerCase().replace(/\s+/g,'-').replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/ñ/g,'n');
-  const privada = COLECCION_PRIVADA[slug] || [];
-  const venta = LIBROS_VENTA[slug] || [];
-  let html = '<div class="libros-section">';
-
-  if(privada.length){
-    html += '<div class="libros-privada"><div class="libros-privada-label">Disponible</div>';
-    privada.forEach(l => {
-      html += `<div class="libros-row">
-        <span class="libros-year">${l.año}</span>
-        <span class="libros-title">${escapeHtml(l.titulo)} <em>${l.nota||''}</em></span>
-      </div>`;
-    });
-    html += '</div>';
+// renderLibros removed — editions now integrated into Obras tab
+// Sub-dialog for editions
+function showEdicionesDialog(tipo, slug){
+  let overlay = document.getElementById('ediciones-overlay');
+  if(!overlay){
+    overlay = document.createElement('div');
+    overlay.id = 'ediciones-overlay';
+    overlay.className = 'ediciones-overlay';
+    overlay.addEventListener('click', e => { if(e.target === overlay) overlay.style.display = 'none'; });
+    document.body.appendChild(overlay);
   }
-
-  if(venta.length){
-    html += '<div class="libros-disponibles-label">Ediciones en venta</div>';
+  let content = '';
+  if(tipo === 'venta'){
+    const venta = LIBROS_VENTA[slug] || [];
+    content = '<h3 class="ediciones-dialog-title">Ediciones disponibles</h3>';
+    content += '<table class="ediciones-tbl"><thead><tr><th>Título</th><th>Año</th><th>Precio</th><th>Vendedor</th><th></th></tr></thead><tbody>';
     venta.forEach(l => {
       const priceStr = l.precio >= 1000 ? (l.precio >= 1000000 ? `${(l.precio/1000000).toFixed(1)}M` : `${Math.round(l.precio/1000)}k`) : l.precio;
       const badge = l.primera_edicion ? ' <em style="color:var(--gualda);font-size:.68rem">1ª ed.</em>' : '';
-      html += `<div class="libros-row">
-        <span class="libros-year">${l.año||''}</span>
-        <span class="libros-title">${escapeHtml(l.titulo)}${badge} <em>${l.vendedor||''}</em></span>
-        <span class="libros-price">${priceStr} ${l.moneda||''}</span>
-        <a href="${l.url}" class="libros-link" onclick="openViewer('${(l.url||'').replace(/'/g,"\\'")}','${escapeHtml(l.titulo)}');return false;">ver</a>
-      </div>`;
+      content += `<tr><td>${escapeHtml(l.titulo)}${badge}</td><td>${l.año||''}</td><td class="ediciones-price">${priceStr} ${l.moneda||''}</td><td>${l.vendedor||''}</td><td><a href="${l.url}" class="obra-link" onclick="openViewer('${(l.url||'').replace(/'/g,"\\'")}','${escapeHtml(l.titulo)}');document.getElementById('ediciones-overlay').style.display='none';return false;">ver</a></td></tr>`;
+    });
+    content += '</tbody></table>';
+  } else {
+    const privada = COLECCION_PRIVADA[slug] || [];
+    content = '<h3 class="ediciones-dialog-title" style="border-left-color:var(--gualda)">Colección privada</h3>';
+    privada.forEach(l => {
+      content += `<div class="libros-row"><span class="libros-year">${l.año}</span><span class="libros-title">${escapeHtml(l.titulo)} <em>${l.nota||''}</em></span></div>`;
     });
   }
-
-  if(!privada.length && !venta.length){
-    html += '<p class="libros-empty">Buscando ediciones disponibles…</p>';
-  }
-
-  html += '</div>';
-  return html;
+  content += '<button class="ediciones-close" onclick="document.getElementById(\'ediciones-overlay\').style.display=\'none\'">✕</button>';
+  overlay.innerHTML = '<div class="ediciones-dialog">' + content + '</div>';
+  overlay.style.display = 'flex';
 }
 
 modal.addEventListener('click', e => { if(e.target === modal){ modal.close(); document.body.style.overflow = ''; history.back(); } });
@@ -777,12 +795,10 @@ window.addEventListener('popstate', (e) => {
         <button class="tabbtn active" data-tab="bio">Biografía</button>
         <button class="tabbtn" data-tab="innov">Innovación</button>
         <button class="tabbtn" data-tab="obras">Obras</button>
-        <button class="tabbtn" data-tab="libros">Libros</button>
       </div>
       <div class="tabpanel active" data-panel="bio">${renderBio(a)}</div>
       <div class="tabpanel" data-panel="innov">${renderInnovacion(a)}</div>
       <div class="tabpanel" data-panel="obras">${renderObras(a)}</div>
-      <div class="tabpanel" data-panel="libros">${renderLibros(a)}</div>
       <div class="refs">Fuentes: ${(a.referencias||[]).join(' · ')}${a.wikipedia_es_url ? ' · <a class="obra-link" href="'+a.wikipedia_es_url+'" onclick="openViewer(\''+a.wikipedia_es_url.replace(/'/g,"\\'")+'\',\'Wikipedia\');return false;">Wikipedia</a>' : ''}</div>
     `;
     const tabbtns = modalContent.querySelectorAll('.tabbtn');

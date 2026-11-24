@@ -468,6 +468,47 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     .slider-section { padding: 1.5rem 1rem 1rem; }
 }
 
+
+/* Family filters */
+.family-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    justify-content: center;
+    padding: 1.2rem 1.5rem .5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.family-btn {
+    padding: .35rem .9rem;
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border: 1px solid var(--borde);
+    background: var(--superficie);
+    color: var(--cuero);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: Inter, sans-serif;
+}
+.family-btn:hover {
+    border-color: var(--rojo);
+    color: var(--marfil);
+}
+.family-btn.active {
+    border-color: var(--gualda);
+    color: var(--gualda);
+    background: rgba(241,191,0,.08);
+}
+.innovation.family-hidden { display: none; }
+.slider-card.family-hidden { display: none; }
+.toc-content a.family-hidden { display: none; }
+@media (max-width: 600px) {
+    .family-filters { padding: .8rem 1rem .3rem; gap: .3rem; }
+    .family-btn { padding: .25rem .6rem; font-size: .62rem; }
+}
+
 </style>
 </head>
 <body>
@@ -490,6 +531,238 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     <h1>30 ideas que cambiaron Occidente</h1>
     <p class="subtitle">El hilo que conecta el Siglo de Oro con la actualidad</p>
     <p class="intro">Treinta innovaciones intelectuales nacidas en la Pen&iacute;nsula Ib&eacute;rica entre los siglos XI y XIX que configuraron el derecho, la ciencia, la econom&iacute;a y la cultura de Occidente. Cada una se cuenta como lo que es: una historia de personas, libros, persecuciones y consecuencias.</p>
+</section>
+
+<div class="family-filters" id="family-filters">
+  <button class="family-btn active" data-family="todas">Todas</button>
+  <button class="family-btn" data-family="derecho">Derecho y política</button>
+  <button class="family-btn" data-family="ciencia">Ciencia y medicina</button>
+  <button class="family-btn" data-family="economia">Economía y sociedad</button>
+  <button class="family-btn" data-family="literatura">Literatura y arte</button>
+  <button class="family-btn" data-family="exploracion">Exploración y técnica</button>
+  <button class="family-btn" data-family="pensamiento">Pensamiento y educación</button>
+</div>
+
+<section class="slider-section">
+<div class="slider-header">
+  <h2>Explorar por concepto</h2>
+  <div class="slider-arrows">
+    <button class="slider-arrow" id="sl-prev" aria-label="Anterior">◂</button>
+    <button class="slider-arrow" id="sl-next" aria-label="Siguiente">▸</button>
+  </div>
+</div>
+<div class="slider-track" id="slider-track">
+<div class="slider-card" data-inn="01" data-family="derecho" onclick="document.getElementById('inn-01').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">⚖️</div>
+  <div class="sc-num">01</div>
+  <div class="sc-title">Derecho Internacional Moderno</div>
+  <div class="sc-campo">Derecho</div>
+  <div class="sc-summary">En 1532, en un aula de la Universidad de Salamanca, el fraile dominico Francisco de Vitoria (c. 1483-1546) pronunció una lección…</div>
+</div>
+<div class="slider-card" data-inn="02" data-family="derecho" onclick="document.getElementById('inn-02').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">⚖️</div>
+  <div class="sc-num">02</div>
+  <div class="sc-title">Derechos Humanos Universales</div>
+  <div class="sc-campo">Derecho / Ética</div>
+  <div class="sc-summary">El 21 de diciembre de 1511, un fraile dominico llamado Antonio de Montesinos subió al púlpito de una iglesia de paja en Santo…</div>
+</div>
+<div class="slider-card" data-inn="03" data-family="literatura" onclick="document.getElementById('inn-03').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">✒️</div>
+  <div class="sc-num">03</div>
+  <div class="sc-title">La Novela Moderna</div>
+  <div class="sc-campo">Literatura</div>
+  <div class="sc-summary">En 1554, un autor anónimo publicó en España un librito que inventó un género: Lazarillo de Tormes. Era la historia de un niño…</div>
+</div>
+<div class="slider-card" data-inn="04" data-family="literatura" onclick="document.getElementById('inn-04').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🎭</div>
+  <div class="sc-num">04</div>
+  <div class="sc-title">El Teatro Moderno</div>
+  <div class="sc-campo">Artes escénicas</div>
+  <div class="sc-summary">En 1609, Lope de Vega publicó el Arte nuevo de hacer comedias, un manifiesto que rompía con dos mil años de ortodoxia…</div>
+</div>
+<div class="slider-card" data-inn="05" data-family="economia" onclick="document.getElementById('inn-05').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🌍</div>
+  <div class="sc-num">05</div>
+  <div class="sc-title">La Globalización: la Primera Economía-Mundo</div>
+  <div class="sc-campo">Economía / Geopolítica</div>
+  <div class="sc-summary">El 6 de septiembre de 1522, una sola nave — la Victoria — entró en el puerto de Sanlúcar de Barrameda con 18 hombres famélicos a…</div>
+</div>
+<div class="slider-card" data-inn="06" data-family="exploracion" onclick="document.getElementById('inn-06').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🏛️</div>
+  <div class="sc-num">06</div>
+  <div class="sc-title">Urbanismo Planificado: el Primer Código Urbanístico del Mundo</div>
+  <div class="sc-campo">Urbanismo / Arquitectura</div>
+  <div class="sc-summary">El 13 de julio de 1573, Felipe II firmó las Ordenanzas de descubrimiento, nueva población y pacificación de las Indias: 148…</div>
+</div>
+<div class="slider-card" data-inn="07" data-family="economia" onclick="document.getElementById('inn-07').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">💰</div>
+  <div class="sc-num">07</div>
+  <div class="sc-title">Teoría Cuantitativa del Dinero y Economía Moderna</div>
+  <div class="sc-campo">Economía</div>
+  <div class="sc-summary">En 1556, el canonista navarro Martín de Azpilcueta — conocido en toda Europa como &#x27;Doctor Navarrus&#x27;, consultado por papas y reyes…</div>
+</div>
+<div class="slider-card" data-inn="08" data-family="literatura" onclick="document.getElementById('inn-08').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">✒️</div>
+  <div class="sc-num">08</div>
+  <div class="sc-title">Realismo Social en la Literatura</div>
+  <div class="sc-campo">Literatura</div>
+  <div class="sc-summary">En 1554, en algún lugar de España, alguien publicó anónimamente un librito que inventó el realismo social: Lazarillo de Tormes.…</div>
+</div>
+<div class="slider-card" data-inn="09" data-family="literatura" onclick="document.getElementById('inn-09').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🎨</div>
+  <div class="sc-num">09</div>
+  <div class="sc-title">Arte Moderno: de la Representación a la Expresión</div>
+  <div class="sc-campo">Arte</div>
+  <div class="sc-summary">En 1865, un pintor francés de 33 años llamado Édouard Manet visitó el Museo del Prado en Madrid y quedó transformado. Frente a…</div>
+</div>
+<div class="slider-card" data-inn="10" data-family="ciencia" onclick="document.getElementById('inn-10').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">⚕️</div>
+  <div class="sc-num">10</div>
+  <div class="sc-title">Salud Pública Global y Vacunación Universal</div>
+  <div class="sc-campo">Medicina</div>
+  <div class="sc-summary">El 30 de noviembre de 1803, la corbeta María Pita zarpó de La Coruña con 22 niños huérfanos a bordo. Llevaban en sus brazos algo…</div>
+</div>
+<div class="slider-card" data-inn="11" data-family="ciencia" onclick="document.getElementById('inn-11').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🌿</div>
+  <div class="sc-num">11</div>
+  <div class="sc-title">BIODIVERSIDAD Y PRECURSORES DE LA EVOLUCIÓN</div>
+  <div class="sc-campo">Ciencias naturales</div>
+  <div class="sc-summary">En 1590, un jesuita de Medina del Campo llamado José de Acosta (1540-1600) publicó en Sevilla la Historia natural y moral de las…</div>
+</div>
+<div class="slider-card" data-inn="12" data-family="pensamiento" onclick="document.getElementById('inn-12').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">👥</div>
+  <div class="sc-num">12</div>
+  <div class="sc-title">ETNOGRAFÍA Y ANTROPOLOGÍA MODERNA</div>
+  <div class="sc-campo">Ciencias sociales</div>
+  <div class="sc-summary">En algún momento entre 1545 y 1590, un franciscano de Sahagún (León) llamado Bernardino de Sahagún (c. 1499-1590) completó lo que…</div>
+</div>
+<div class="slider-card" data-inn="13" data-family="pensamiento" onclick="document.getElementById('inn-13').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🗣️</div>
+  <div class="sc-num">13</div>
+  <div class="sc-title">LINGÜÍSTICA: LA GRAMÁTICA DE LAS LENGUAS VIVAS</div>
+  <div class="sc-campo">Lingüística</div>
+  <div class="sc-summary">El 18 de agosto de 1492 — semanas después de que Colón zarpara de Palos —, un profesor de retórica de Lebrija llamado Antonio de…</div>
+</div>
+<div class="slider-card" data-inn="14" data-family="ciencia" onclick="document.getElementById('inn-14').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🧭</div>
+  <div class="sc-num">14</div>
+  <div class="sc-title">GEODESIA: LA FORMA DE LA TIERRA Y EL SISTEMA MÉTRICO</div>
+  <div class="sc-campo">Ciencia / Geodesia</div>
+  <div class="sc-summary">En 1735, dos jóvenes oficiales españoles — Jorge Juan, de 22 años, y Antonio de Ulloa, de 19 — se unieron a la Expedición…</div>
+</div>
+<div class="slider-card" data-inn="15" data-family="economia" onclick="document.getElementById('inn-15').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🤝</div>
+  <div class="sc-num">15</div>
+  <div class="sc-title">EL ESTADO DEL BIENESTAR: ASISTENCIA SOCIAL PÚBLICA</div>
+  <div class="sc-campo">Política social</div>
+  <div class="sc-summary">En 1526, un humanista valenciano exiliado en Brujas llamado Juan Luis Vives (1492-1540) publicó De subventione pauperum, un…</div>
+</div>
+<div class="slider-card" data-inn="16" data-family="economia" onclick="document.getElementById('inn-16').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">💰</div>
+  <div class="sc-num">16</div>
+  <div class="sc-title">ECONOMÍA DE MERCADO: TEORÍA DEL DINERO Y EL PRECIO JUSTO</div>
+  <div class="sc-campo">Economía</div>
+  <div class="sc-summary">En 1556, un canonista navarro de 64 años llamado Martín de Azpilcueta (1492-1586) publicó en Salamanca el Comentario resolutorio…</div>
+</div>
+<div class="slider-card" data-inn="17" data-family="pensamiento" onclick="document.getElementById('inn-17').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🕯️</div>
+  <div class="sc-num">17</div>
+  <div class="sc-title">MÍSTICA E INTROSPECCIÓN PSICOLÓGICA</div>
+  <div class="sc-campo">Psicología / Espiritualidad</div>
+  <div class="sc-summary">En 1577, una monja carmelita de 62 años encerrada en un convento de Toledo escribió por obediencia — sus confesores se lo…</div>
+</div>
+<div class="slider-card" data-inn="18" data-family="exploracion" onclick="document.getElementById('inn-18').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🗺️</div>
+  <div class="sc-num">18</div>
+  <div class="sc-title">CARTOGRAFÍA OCEÁNICA: EL PRIMER SISTEMA ESTATAL DE MAPAS</div>
+  <div class="sc-campo">Ciencia / Navegación</div>
+  <div class="sc-summary">En 1503, la Corona española creó en Sevilla la Casa de Contratación, una institución sin precedente que combinaba funciones de…</div>
+</div>
+<div class="slider-card" data-inn="19" data-family="derecho" onclick="document.getElementById('inn-19').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">⚖️</div>
+  <div class="sc-num">19</div>
+  <div class="sc-title">GUERRA JUSTA Y DERECHO INTERNACIONAL HUMANITARIO</div>
+  <div class="sc-campo">Derecho / Ética</div>
+  <div class="sc-summary">En 1538, Francisco de Vitoria pronunció en Salamanca la relectio De iure belli, una lección sobre los límites de la guerra que…</div>
+</div>
+<div class="slider-card" data-inn="20" data-family="derecho" onclick="document.getElementById('inn-20').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">📜</div>
+  <div class="sc-num">20</div>
+  <div class="sc-title">SOBERANÍA POPULAR: DEL AULA DE SALAMANCA AL ARTÍCULO 21 DE LA DUDH</div>
+  <div class="sc-campo">Filosofía política / Derecho constitucional</div>
+  <div class="sc-summary">En 1188, Alfonso IX convocó en León unas Cortes que la UNESCO reconoció en 2013 como &#x27;la manifestación documental más antigua del…</div>
+</div>
+<div class="slider-card" data-inn="21" data-family="ciencia" onclick="document.getElementById('inn-21').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">⚕️</div>
+  <div class="sc-num">21</div>
+  <div class="sc-title">Cirugía moderna y medicina experimental</div>
+  <div class="sc-campo">Medicina</div>
+  <div class="sc-summary">En Córdoba, hacia el año 1000, un médico llamado Abu al-Qasim al-Zahrawi —Abulcasis para los europeos— completó el Kitab…</div>
+</div>
+<div class="slider-card" data-inn="22" data-family="ciencia" onclick="document.getElementById('inn-22').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">⚡</div>
+  <div class="sc-num">22</div>
+  <div class="sc-title">Física de la caída libre y la aceleración uniforme</div>
+  <div class="sc-campo">Física</div>
+  <div class="sc-summary">En 1551, un fraile dominico de Salamanca llamado Domingo de Soto (1494-1560) publicó una idea que tardaría medio siglo en…</div>
+</div>
+<div class="slider-card" data-inn="23" data-family="ciencia" onclick="document.getElementById('inn-23').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🔭</div>
+  <div class="sc-num">23</div>
+  <div class="sc-title">Astronomía de precisión y navegación oceánica</div>
+  <div class="sc-campo">Astronomía / Navegación</div>
+  <div class="sc-summary">En la Toledo del siglo XI, un astrónomo llamado Abu Ishaq Ibrahim ibn Yahya al-Naqqash al-Zarqali — Azarquiel para los europeos —…</div>
+</div>
+<div class="slider-card" data-inn="24" data-family="pensamiento" onclick="document.getElementById('inn-24').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">📚</div>
+  <div class="sc-num">24</div>
+  <div class="sc-title">El sistema educativo moderno</div>
+  <div class="sc-campo">Educación</div>
+  <div class="sc-summary">En 1599, la Compañía de Jesús publicó la Ratio Studiorum, el primer plan educativo estandarizado de la historia: un sistema…</div>
+</div>
+<div class="slider-card" data-inn="25" data-family="literatura" onclick="document.getElementById('inn-25').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">♀️</div>
+  <div class="sc-num">25</div>
+  <div class="sc-title">Voces femeninas y proto-feminismo literario</div>
+  <div class="sc-campo">Literatura / Derechos de la mujer</div>
+  <div class="sc-summary">En 1637, en la España de Felipe IV, una mujer llamada María de Zayas y Sotomayor publicó sus Novelas amorosas y ejemplares, donde…</div>
+</div>
+<div class="slider-card" data-inn="26" data-family="literatura" onclick="document.getElementById('inn-26').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🎵</div>
+  <div class="sc-num">26</div>
+  <div class="sc-title">Polifonía sacra y el nacimiento de la música devocional moderna</div>
+  <div class="sc-campo">Música</div>
+  <div class="sc-summary">En 1544, una colección de misas impresas en Roma llevó la firma de un sevillano: Cristóbal de Morales (c. 1500-1553) se convirtió…</div>
+</div>
+<div class="slider-card" data-inn="27" data-family="ciencia" onclick="document.getElementById('inn-27').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">⚗️</div>
+  <div class="sc-num">27</div>
+  <div class="sc-title">El wolframio y la ciencia de materiales moderna</div>
+  <div class="sc-campo">Química / Industria</div>
+  <div class="sc-summary">En 1783, en un laboratorio del Real Seminario de Vergara — una escuela técnica financiada por la Sociedad Bascongada de Amigos…</div>
+</div>
+<div class="slider-card" data-inn="28" data-family="economia" onclick="document.getElementById('inn-28').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🌾</div>
+  <div class="sc-num">28</div>
+  <div class="sc-title">La revolución alimentaria global (Intercambio Colombino)</div>
+  <div class="sc-campo">Alimentación / Agricultura</div>
+  <div class="sc-summary">Ninguna innovación del Siglo de Oro cambió más la vida cotidiana de más personas que algo que nadie planeó: el intercambio de…</div>
+</div>
+<div class="slider-card" data-inn="29" data-family="exploracion" onclick="document.getElementById('inn-29').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">🏗️</div>
+  <div class="sc-num">29</div>
+  <div class="sc-title">Arquitectura como lenguaje de Estado</div>
+  <div class="sc-campo">Arquitectura</div>
+  <div class="sc-summary">En 1563, Felipe II encargó a Juan de Herrera un edificio que fuera a la vez palacio, monasterio, panteón y biblioteca: El…</div>
+</div>
+<div class="slider-card" data-inn="30" data-family="exploracion" onclick="document.getElementById('inn-30').scrollIntoView({behavior:'smooth',block:'start'})">
+  <div class="sc-icon">⚓</div>
+  <div class="sc-num">30</div>
+  <div class="sc-title">Ingeniería naval y los arsenales del Rey</div>
+  <div class="sc-campo">Ingeniería</div>
+  <div class="sc-summary">En 1749, un oficial de la Armada española llamado Jorge Juan y Santacilia llegó a Londres con el alias de &#x27;Mr. Josues&#x27;. Su…</div>
+</div>
+</div>
 </section>
 
 <!-- Table of Contents -->
@@ -535,7 +808,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
 <!-- Main content -->
 <main class="content">
     
-    <article class="innovation" id="innovacion-1">
+    <article class="innovation" id="innovacion-1" data-family="derecho">
         <div class="inn-header">
             <span class="inn-num">01</span><span class="inn-total">/30</span>
             <h2>Derecho Internacional Moderno</h2>
@@ -567,7 +840,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-2">
+    <article class="innovation" id="innovacion-2" data-family="derecho">
         <div class="inn-header">
             <span class="inn-num">02</span><span class="inn-total">/30</span>
             <h2>Derechos Humanos Universales</h2>
@@ -600,7 +873,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-3">
+    <article class="innovation" id="innovacion-3" data-family="literatura">
         <div class="inn-header">
             <span class="inn-num">03</span><span class="inn-total">/30</span>
             <h2>La Novela Moderna</h2>
@@ -630,7 +903,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-4">
+    <article class="innovation" id="innovacion-4" data-family="literatura">
         <div class="inn-header">
             <span class="inn-num">04</span><span class="inn-total">/30</span>
             <h2>El Teatro Moderno</h2>
@@ -657,7 +930,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-5">
+    <article class="innovation" id="innovacion-5" data-family="economia">
         <div class="inn-header">
             <span class="inn-num">05</span><span class="inn-total">/30</span>
             <h2>La Globalización: la Primera Economía-Mundo</h2>
@@ -684,7 +957,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-6">
+    <article class="innovation" id="innovacion-6" data-family="exploracion">
         <div class="inn-header">
             <span class="inn-num">06</span><span class="inn-total">/30</span>
             <h2>Urbanismo Planificado: el Primer Código Urbanístico del Mundo</h2>
@@ -710,7 +983,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-7">
+    <article class="innovation" id="innovacion-7" data-family="economia">
         <div class="inn-header">
             <span class="inn-num">07</span><span class="inn-total">/30</span>
             <h2>Teoría Cuantitativa del Dinero y Economía Moderna</h2>
@@ -738,7 +1011,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-8">
+    <article class="innovation" id="innovacion-8" data-family="literatura">
         <div class="inn-header">
             <span class="inn-num">08</span><span class="inn-total">/30</span>
             <h2>Realismo Social en la Literatura</h2>
@@ -772,7 +1045,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-9">
+    <article class="innovation" id="innovacion-9" data-family="literatura">
         <div class="inn-header">
             <span class="inn-num">09</span><span class="inn-total">/30</span>
             <h2>Arte Moderno: de la Representación a la Expresión</h2>
@@ -801,7 +1074,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-10">
+    <article class="innovation" id="innovacion-10" data-family="ciencia">
         <div class="inn-header">
             <span class="inn-num">10</span><span class="inn-total">/30</span>
             <h2>Salud Pública Global y Vacunación Universal</h2>
@@ -828,7 +1101,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-11">
+    <article class="innovation" id="innovacion-11" data-family="ciencia">
         <div class="inn-header">
             <span class="inn-num">11</span><span class="inn-total">/30</span>
             <h2>BIODIVERSIDAD Y PRECURSORES DE LA EVOLUCIÓN</h2>
@@ -858,7 +1131,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-12">
+    <article class="innovation" id="innovacion-12" data-family="pensamiento">
         <div class="inn-header">
             <span class="inn-num">12</span><span class="inn-total">/30</span>
             <h2>ETNOGRAFÍA Y ANTROPOLOGÍA MODERNA</h2>
@@ -885,7 +1158,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-13">
+    <article class="innovation" id="innovacion-13" data-family="pensamiento">
         <div class="inn-header">
             <span class="inn-num">13</span><span class="inn-total">/30</span>
             <h2>LINGÜÍSTICA: LA GRAMÁTICA DE LAS LENGUAS VIVAS</h2>
@@ -912,7 +1185,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-14">
+    <article class="innovation" id="innovacion-14" data-family="ciencia">
         <div class="inn-header">
             <span class="inn-num">14</span><span class="inn-total">/30</span>
             <h2>GEODESIA: LA FORMA DE LA TIERRA Y EL SISTEMA MÉTRICO</h2>
@@ -939,7 +1212,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-15">
+    <article class="innovation" id="innovacion-15" data-family="economia">
         <div class="inn-header">
             <span class="inn-num">15</span><span class="inn-total">/30</span>
             <h2>EL ESTADO DEL BIENESTAR: ASISTENCIA SOCIAL PÚBLICA</h2>
@@ -971,7 +1244,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-16">
+    <article class="innovation" id="innovacion-16" data-family="economia">
         <div class="inn-header">
             <span class="inn-num">16</span><span class="inn-total">/30</span>
             <h2>ECONOMÍA DE MERCADO: TEORÍA DEL DINERO Y EL PRECIO JUSTO</h2>
@@ -999,7 +1272,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-17">
+    <article class="innovation" id="innovacion-17" data-family="pensamiento">
         <div class="inn-header">
             <span class="inn-num">17</span><span class="inn-total">/30</span>
             <h2>MÍSTICA E INTROSPECCIÓN PSICOLÓGICA</h2>
@@ -1026,7 +1299,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-18">
+    <article class="innovation" id="innovacion-18" data-family="exploracion">
         <div class="inn-header">
             <span class="inn-num">18</span><span class="inn-total">/30</span>
             <h2>CARTOGRAFÍA OCEÁNICA: EL PRIMER SISTEMA ESTATAL DE MAPAS</h2>
@@ -1053,7 +1326,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-19">
+    <article class="innovation" id="innovacion-19" data-family="derecho">
         <div class="inn-header">
             <span class="inn-num">19</span><span class="inn-total">/30</span>
             <h2>GUERRA JUSTA Y DERECHO INTERNACIONAL HUMANITARIO</h2>
@@ -1084,7 +1357,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-20">
+    <article class="innovation" id="innovacion-20" data-family="derecho">
         <div class="inn-header">
             <span class="inn-num">20</span><span class="inn-total">/30</span>
             <h2>SOBERANÍA POPULAR: DEL AULA DE SALAMANCA AL ARTÍCULO 21 DE LA DUDH</h2>
@@ -1120,7 +1393,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-21">
+    <article class="innovation" id="innovacion-21" data-family="ciencia">
         <div class="inn-header">
             <span class="inn-num">21</span><span class="inn-total">/30</span>
             <h2>Cirugía moderna y medicina experimental</h2>
@@ -1145,7 +1418,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-22">
+    <article class="innovation" id="innovacion-22" data-family="ciencia">
         <div class="inn-header">
             <span class="inn-num">22</span><span class="inn-total">/30</span>
             <h2>Física de la caída libre y la aceleración uniforme</h2>
@@ -1170,7 +1443,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-23">
+    <article class="innovation" id="innovacion-23" data-family="ciencia">
         <div class="inn-header">
             <span class="inn-num">23</span><span class="inn-total">/30</span>
             <h2>Astronomía de precisión y navegación oceánica</h2>
@@ -1195,7 +1468,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-24">
+    <article class="innovation" id="innovacion-24" data-family="pensamiento">
         <div class="inn-header">
             <span class="inn-num">24</span><span class="inn-total">/30</span>
             <h2>El sistema educativo moderno</h2>
@@ -1220,7 +1493,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-25">
+    <article class="innovation" id="innovacion-25" data-family="literatura">
         <div class="inn-header">
             <span class="inn-num">25</span><span class="inn-total">/30</span>
             <h2>Voces femeninas y proto-feminismo literario</h2>
@@ -1245,7 +1518,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-26">
+    <article class="innovation" id="innovacion-26" data-family="literatura">
         <div class="inn-header">
             <span class="inn-num">26</span><span class="inn-total">/30</span>
             <h2>Polifonía sacra y el nacimiento de la música devocional moderna</h2>
@@ -1270,7 +1543,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-27">
+    <article class="innovation" id="innovacion-27" data-family="ciencia">
         <div class="inn-header">
             <span class="inn-num">27</span><span class="inn-total">/30</span>
             <h2>El wolframio y la ciencia de materiales moderna</h2>
@@ -1295,7 +1568,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-28">
+    <article class="innovation" id="innovacion-28" data-family="economia">
         <div class="inn-header">
             <span class="inn-num">28</span><span class="inn-total">/30</span>
             <h2>La revolución alimentaria global (Intercambio Colombino)</h2>
@@ -1320,7 +1593,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-29">
+    <article class="innovation" id="innovacion-29" data-family="exploracion">
         <div class="inn-header">
             <span class="inn-num">29</span><span class="inn-total">/30</span>
             <h2>Arquitectura como lenguaje de Estado</h2>
@@ -1345,7 +1618,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     </article>
     <hr class="inn-separator">
 
-    <article class="innovation" id="innovacion-30">
+    <article class="innovation" id="innovacion-30" data-family="exploracion">
         <div class="inn-header">
             <span class="inn-num">30</span><span class="inn-total">/30</span>
             <h2>Ingeniería naval y los arsenales del Rey</h2>
@@ -1579,6 +1852,64 @@ document.getElementById('sl-prev').addEventListener('click', () => {
 });
 document.getElementById('sl-next').addEventListener('click', () => {
     track.scrollBy({ left: 240, behavior: 'smooth' });
+});
+
+
+
+// Family filter logic
+const FAMILY_MAP = {
+    '01': 'derecho', '02': 'derecho', '19': 'derecho', '20': 'derecho',
+    '10': 'ciencia', '11': 'ciencia', '14': 'ciencia', '21': 'ciencia', '22': 'ciencia', '23': 'ciencia', '27': 'ciencia',
+    '05': 'economia', '07': 'economia', '15': 'economia', '16': 'economia', '28': 'economia',
+    '03': 'literatura', '04': 'literatura', '08': 'literatura', '09': 'literatura', '25': 'literatura', '26': 'literatura',
+    '06': 'exploracion', '18': 'exploracion', '29': 'exploracion', '30': 'exploracion',
+    '12': 'pensamiento', '13': 'pensamiento', '17': 'pensamiento', '24': 'pensamiento'
+};
+
+document.querySelectorAll('.family-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const family = btn.dataset.family;
+        // Update active button
+        document.querySelectorAll('.family-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Filter articles
+        document.querySelectorAll('.innovation').forEach(el => {
+            const id = el.id.replace('innovacion-', '').replace('inn-', '');
+            const num = id.padStart(2, '0');
+            const artFamily = FAMILY_MAP[num];
+            if (family === 'todas' || artFamily === family) {
+                el.classList.remove('family-hidden');
+            } else {
+                el.classList.add('family-hidden');
+            }
+        });
+        
+        // Filter slider cards
+        document.querySelectorAll('.slider-card').forEach(card => {
+            const cardFamily = card.dataset.family;
+            if (family === 'todas' || cardFamily === family) {
+                card.classList.remove('family-hidden');
+            } else {
+                card.classList.add('family-hidden');
+            }
+        });
+        
+        // Filter TOC links
+        document.querySelectorAll('#toc a').forEach(link => {
+            const href = link.getAttribute('href') || '';
+            const match = href.match(/innovacion-(\d+)/);
+            if (match) {
+                const num = match[1].padStart(2, '0');
+                const tocFamily = FAMILY_MAP[num];
+                if (family === 'todas' || tocFamily === family) {
+                    link.classList.remove('family-hidden');
+                } else {
+                    link.classList.add('family-hidden');
+                }
+            }
+        });
+    });
 });
 
 </script>
