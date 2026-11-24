@@ -125,8 +125,9 @@
   .ediciones-privada-link:hover{color:var(--marfil)}
   .ediciones-none{font-size:.8rem;color:var(--cuero)}
   /* Editions overlay dialog */
-  .ediciones-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;padding:1rem}
-  .ediciones-dialog{background:var(--superficie);border:1px solid var(--borde);max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:1.5rem;position:relative}
+  .ediciones-overlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;padding:2rem 1rem}
+  .ediciones-dialog{background:var(--negro);border:1px solid var(--borde);max-width:750px;width:calc(100% - 2rem);max-height:85vh;overflow-y:auto;overflow-x:auto;padding:2rem 1.5rem;position:relative}
+  @media(max-width:600px){.ediciones-dialog{width:100%;max-width:100%;max-height:100vh;padding:1.2rem 1rem}}
   .ediciones-dialog-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--marfil);font-weight:400;margin-bottom:1rem;padding-left:.8rem;border-left:3px solid var(--rojo)}
   .ediciones-tbl{width:100%;border-collapse:collapse;font-size:.8rem}
   .ediciones-tbl th{text-align:left;color:var(--cuero);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:.4rem .3rem;border-bottom:1px solid var(--borde)}
@@ -784,12 +785,14 @@ const COLECCION_PRIVADA = {
 function showEdicionesDialog(tipo, slug){
   let overlay = document.getElementById('ediciones-overlay');
   if(!overlay){
-    overlay = document.createElement('div');
+    overlay = document.createElement('dialog');
     overlay.id = 'ediciones-overlay';
     overlay.className = 'ediciones-overlay';
-    overlay.addEventListener('click', e => { if(e.target === overlay) overlay.style.display = 'none'; });
-    modal.appendChild(overlay);
+    overlay.style.cssText = 'background:rgba(0,0,0,0.9);border:none;width:100vw;height:100vh;max-width:100vw;max-height:100vh;padding:2rem 1rem;display:flex;align-items:center;justify-content:center;position:fixed;top:0;left:0;';
+    overlay.addEventListener('click', e => { if(e.target === overlay) overlay.close(); });
+    document.body.appendChild(overlay);
   }
+  overlay.showModal();
   let content = '';
   if(tipo === 'venta'){
     const venta = LIBROS_VENTA[slug] || [];
@@ -798,7 +801,7 @@ function showEdicionesDialog(tipo, slug){
     venta.forEach(l => {
       const priceStr = l.precio >= 1000 ? (l.precio >= 1000000 ? `${(l.precio/1000000).toFixed(1)}M` : `${Math.round(l.precio/1000)}k`) : l.precio;
       const badge = l.primera_edicion ? ' <em style="color:var(--gualda);font-size:.68rem">1ª ed.</em>' : '';
-      content += `<tr><td>${escapeHtml(l.titulo)}${badge}</td><td>${l.año||''}</td><td class="ediciones-price">${priceStr} ${l.moneda||''}</td><td>${l.vendedor||''}</td><td><a href="${l.url}" class="obra-link" onclick="openViewer('${(l.url||'').replace(/'/g,"\\'")}','${escapeHtml(l.titulo)}');document.getElementById('ediciones-overlay').style.display='none';return false;">ver</a></td></tr>`;
+      content += `<tr><td>${escapeHtml(l.titulo)}${badge}</td><td>${l.año||''}</td><td class="ediciones-price">${priceStr} ${l.moneda||''}</td><td>${l.vendedor||''}</td><td><a href="${l.url}" class="obra-link" onclick="openViewer('${(l.url||'').replace(/'/g,"\\'")}','${escapeHtml(l.titulo)}');document.getElementById('ediciones-overlay').close();return false;">ver</a></td></tr>`;
     });
     content += '</tbody></table>';
   } else {
@@ -808,7 +811,7 @@ function showEdicionesDialog(tipo, slug){
       content += `<div class="libros-row"><span class="libros-year">${l.año}</span><span class="libros-title">${escapeHtml(l.titulo)} <em>${l.nota||''}</em></span></div>`;
     });
   }
-  content += '<button class="ediciones-close" onclick="document.getElementById(\'ediciones-overlay\').style.display=\'none\'">✕</button>';
+  content += '<button class="ediciones-close" onclick="document.getElementById(\'ediciones-overlay\').close()">✕</button>';
   overlay.innerHTML = '<div class="ediciones-dialog">' + content + '</div>';
   overlay.style.display = 'flex';
 }
