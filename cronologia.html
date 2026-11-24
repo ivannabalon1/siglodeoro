@@ -321,5 +321,160 @@ document.addEventListener('touchend', () => {
 renderTimeline();
 // precursors now integrated in timeline
 </script>
+
+<script id="feedback-widget">
+/* Siglo de Oro — Feedback Widget */
+(function(){
+const SUPABASE_URL = 'https://vaxidquzijxpkgsnewbv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_OfyHIhuyFyLJgLn6F9ns-w_51hM5ufI';
+
+// Inject styles
+const style = document.createElement('style');
+style.textContent = `
+#so-feedback-btn{position:fixed;bottom:20px;right:20px;z-index:9000;width:48px;height:48px;background:#AA151B;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+#so-feedback-btn:hover{background:#cc1a22}
+#so-feedback-btn svg{width:24px;height:24px;fill:#F0E6D0}
+#so-feedback-panel{display:none;position:fixed;bottom:80px;right:20px;z-index:9001;width:320px;max-width:calc(100vw - 40px);background:#12100C;border:1px solid rgba(170,21,27,0.3);font-family:Inter,sans-serif;padding:0;overflow:hidden}
+#so-feedback-panel.open{display:block}
+.so-fb-header{padding:12px 16px;border-bottom:1px solid rgba(170,21,27,0.15);display:flex;align-items:center;justify-content:space-between}
+.so-fb-header h3{font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400;color:#F0E6D0;margin:0}
+.so-fb-close{background:none;border:none;color:#6B5D4D;font-size:1.3rem;cursor:pointer;padding:0 4px}
+.so-fb-close:hover{color:#F0E6D0}
+.so-fb-body{padding:16px}
+.so-fb-body textarea{width:100%;height:80px;background:#0A0A0A;border:1px solid rgba(170,21,27,0.2);color:#F0E6D0;font-family:Inter,sans-serif;font-size:.85rem;padding:8px;resize:vertical}
+.so-fb-body textarea:focus{outline:none;border-color:#AA151B}
+.so-fb-body input{width:100%;background:#0A0A0A;border:1px solid rgba(170,21,27,0.2);color:#F0E6D0;font-family:Inter,sans-serif;font-size:.82rem;padding:8px;margin-bottom:8px}
+.so-fb-body input:focus{outline:none;border-color:#AA151B}
+.so-fb-body label{font-size:.75rem;color:#6B5D4D;display:block;margin-bottom:4px}
+.so-fb-send{background:#AA151B;border:none;color:#F0E6D0;font-family:Inter,sans-serif;font-size:.85rem;font-weight:600;padding:8px 16px;cursor:pointer;margin-top:8px;width:100%;transition:background .2s}
+.so-fb-send:hover{background:#cc1a22}
+.so-fb-send:disabled{opacity:.5;cursor:not-allowed}
+.so-fb-thanks{text-align:center;padding:8px 0}
+.so-fb-thanks p{color:#F0E6D0;font-size:.9rem;margin:0 0 12px}
+.so-fb-thanks .check{color:#F1BF00;font-size:2rem;margin-bottom:8px}
+.so-fb-email-ask{font-size:.78rem;color:#6B5D4D;margin-top:8px;line-height:1.5}
+.so-fb-email-row{display:flex;gap:6px;margin-top:6px}
+.so-fb-email-row input{flex:1;margin:0}
+.so-fb-email-row button{background:#6B5D4D;border:none;color:#F0E6D0;font-size:.78rem;padding:6px 12px;cursor:pointer;white-space:nowrap}
+.so-fb-email-row button:hover{background:#AA151B}
+.so-fb-skip{background:none;border:none;color:#6B5D4D;font-size:.75rem;cursor:pointer;margin-top:8px;text-decoration:underline}
+.so-fb-skip:hover{color:#F0E6D0}
+`;
+document.head.appendChild(style);
+
+// Create button
+const btn = document.createElement('button');
+btn.id = 'so-feedback-btn';
+btn.title = 'Dejar un comentario';
+btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>';
+document.body.appendChild(btn);
+
+// Create panel
+const panel = document.createElement('div');
+panel.id = 'so-feedback-panel';
+const page = document.title.split('—')[0]?.trim() || location.pathname.replace(/\//g,'') || 'inicio';
+panel.innerHTML = `
+<div class="so-fb-header"><h3>¿Qué opinas?</h3><button class="so-fb-close">&times;</button></div>
+<div class="so-fb-body" id="so-fb-form-view">
+  <label>Sobre</label>
+  <input type="text" id="so-fb-context" value="${page}" placeholder="Página, autor, sección...">
+  <label>Tu comentario</label>
+  <textarea id="so-fb-comment" placeholder="Escribe aquí tu opinión, sugerencia o corrección..."></textarea>
+  <button class="so-fb-send" id="so-fb-submit">Enviar</button>
+</div>
+<div class="so-fb-body so-fb-thanks" id="so-fb-thanks-view" style="display:none">
+  <div class="check">✓</div>
+  <p>¡Gracias por tu comentario!</p>
+  <div class="so-fb-email-ask">Si quieres que te informemos de la evolución de esta página, déjanos tu email:</div>
+  <div class="so-fb-email-row">
+    <input type="email" id="so-fb-email" placeholder="tu@email.com">
+    <button id="so-fb-email-send">Enviar</button>
+  </div>
+  <button class="so-fb-skip" id="so-fb-skip">No, gracias</button>
+</div>
+`;
+document.body.appendChild(panel);
+
+// State
+let currentFeedbackId = null;
+
+// Toggle panel
+btn.addEventListener('click', () => panel.classList.toggle('open'));
+panel.querySelector('.so-fb-close').addEventListener('click', () => panel.classList.remove('open'));
+
+// Submit comment
+document.getElementById('so-fb-submit').addEventListener('click', async function(){
+  const comment = document.getElementById('so-fb-comment').value.trim();
+  if(!comment) return;
+  this.disabled = true;
+  this.textContent = 'Enviando...';
+  try {
+    const resp = await fetch(SUPABASE_URL + '/rest/v1/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({
+        page: location.pathname,
+        context: document.getElementById('so-fb-context').value.trim(),
+        comment: comment,
+        user_agent: navigator.userAgent.substring(0, 200)
+      })
+    });
+    if(resp.ok){
+      const data = await resp.json();
+      currentFeedbackId = data[0]?.id;
+      document.getElementById('so-fb-form-view').style.display = 'none';
+      document.getElementById('so-fb-thanks-view').style.display = 'block';
+    } else {
+      this.textContent = 'Error — reintentar';
+      this.disabled = false;
+    }
+  } catch(e) {
+    this.textContent = 'Error — reintentar';
+    this.disabled = false;
+  }
+});
+
+// Submit email
+document.getElementById('so-fb-email-send').addEventListener('click', async function(){
+  const email = document.getElementById('so-fb-email').value.trim();
+  if(!email || !currentFeedbackId) return;
+  try {
+    await fetch(SUPABASE_URL + '/rest/v1/feedback?id=eq.' + currentFeedbackId, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      },
+      body: JSON.stringify({ email: email })
+    });
+  } catch(e) {}
+  resetPanel();
+});
+
+// Skip email
+document.getElementById('so-fb-skip').addEventListener('click', resetPanel);
+
+function resetPanel(){
+  panel.classList.remove('open');
+  setTimeout(() => {
+    document.getElementById('so-fb-form-view').style.display = 'block';
+    document.getElementById('so-fb-thanks-view').style.display = 'none';
+    document.getElementById('so-fb-comment').value = '';
+    document.getElementById('so-fb-email').value = '';
+    const submitBtn = document.getElementById('so-fb-submit');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Enviar';
+    currentFeedbackId = null;
+  }, 300);
+}
+})();
+
+</script>
 </body>
 </html>
