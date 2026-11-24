@@ -365,6 +365,109 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     .site-nav .brand { font-size: .95rem; }
     .content { padding: 0 1rem 3rem; }
 }
+
+/* Innovation Slider */
+.slider-section {
+    max-width: 100%;
+    padding: 2.5rem 1.5rem 2rem;
+    border-bottom: 1px solid var(--borde);
+    overflow: hidden;
+}
+.slider-header {
+    max-width: 800px;
+    margin: 0 auto .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.slider-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--gualda);
+}
+.slider-arrows {
+    display: flex;
+    gap: .4rem;
+}
+.slider-arrow {
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    color: var(--marfil);
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+}
+.slider-arrow:hover {
+    border-color: var(--rojo);
+    color: var(--gualda);
+}
+.slider-track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: .5rem 0 1rem;
+}
+.slider-track::-webkit-scrollbar { display: none; }
+.slider-card {
+    flex: 0 0 220px;
+    scroll-snap-align: start;
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    padding: 1.2rem 1rem;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    min-height: 180px;
+}
+.slider-card:hover {
+    border-color: var(--rojo);
+    transform: translateY(-2px);
+}
+.sc-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+.sc-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: .75rem;
+    color: var(--rojo);
+}
+.sc-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: .95rem;
+    color: var(--marfil);
+    line-height: 1.25;
+}
+.sc-campo {
+    font-size: .65rem;
+    color: var(--gualda);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 600;
+}
+.sc-summary {
+    font-size: .72rem;
+    color: var(--cuero);
+    line-height: 1.5;
+    flex: 1;
+}
+@media (max-width: 600px) {
+    .slider-card { flex: 0 0 180px; min-height: 160px; padding: 1rem .8rem; }
+    .sc-title { font-size: .85rem; }
+    .slider-section { padding: 1.5rem 1rem 1rem; }
+}
+
 </style>
 </head>
 <body>
@@ -385,7 +488,7 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
 <!-- Hero -->
 <section class="hero">
     <h1>30 ideas que cambiaron Occidente</h1>
-    <p class="subtitle">El hilo que conecta Salamanca con el mundo moderno</p>
+    <p class="subtitle">El hilo que conecta el Siglo de Oro con la actualidad</p>
     <p class="intro">Treinta innovaciones intelectuales nacidas en la Pen&iacute;nsula Ib&eacute;rica entre los siglos XI y XIX que configuraron el derecho, la ciencia, la econom&iacute;a y la cultura de Occidente. Cada una se cuenta como lo que es: una historia de personas, libros, persecuciones y consecuencias.</p>
 </section>
 
@@ -1466,6 +1569,17 @@ function resetPanel(){
   }, 300);
 }
 })();
+
+
+
+// Slider navigation
+const track = document.getElementById('slider-track');
+document.getElementById('sl-prev').addEventListener('click', () => {
+    track.scrollBy({ left: -240, behavior: 'smooth' });
+});
+document.getElementById('sl-next').addEventListener('click', () => {
+    track.scrollBy({ left: 240, behavior: 'smooth' });
+});
 
 </script>
 </body>
