@@ -68,7 +68,7 @@
   .tier-anexo{background:transparent;color:var(--ultramar);border:1px solid var(--ultramar)}
 
   /* Modal — esquinas rectas */
-  dialog{max-width:640px;width:92%;border:none;padding:0;background:var(--superficie);color:var(--marfil)}
+  dialog{max-width:640px;width:92%;border:none;padding:0;background:var(--superficie);color:var(--marfil);overscroll-behavior:contain}
   dialog::backdrop{background:rgba(0,0,0,.7)}
   .modal-flag{height:4px;background:linear-gradient(180deg,#AA151B 33%,#F1BF00 33% 66%,#AA151B 66%)}
   .modal-inner{padding:1.5rem}
@@ -724,7 +724,7 @@ function renderLibros(a){
   return html;
 }
 
-modal.addEventListener('click', e => { if(e.target === modal){ modal.close(); history.back(); } });
+modal.addEventListener('click', e => { if(e.target === modal){ modal.close(); document.body.style.overflow = ''; history.back(); } });
 
 // Viewer for external links (embedded iframe)
 const viewer = document.getElementById('viewer');
@@ -754,6 +754,7 @@ window.addEventListener('popstate', (e) => {
     closeViewer();
   } else if(modal.open){
     modal.close();
+    document.body.style.overflow = '';
   }
 });
 
@@ -791,6 +792,7 @@ window.addEventListener('popstate', (e) => {
       modalContent.querySelectorAll('.tabpanel').forEach(p => p.classList.toggle('active', p.dataset.panel===btn.dataset.tab));
     }));
     modal.showModal();
+    document.body.style.overflow = 'hidden';
   };
   window.openModal = origFn;
 }
