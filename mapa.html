@@ -25,7 +25,7 @@ body{background:#0A0A0A;color:#F0E6D0;font-family:'Segoe UI',system-ui,sans-seri
 #tooltip .tt-place{color:#6B5D4D;font-size:12px;margin-top:4px}
 #tooltip .tt-campo{color:#6B5D4D;font-size:11px;margin-top:2px}
 #legend{position:fixed;bottom:12px;left:12px;z-index:100;background:rgba(10,10,10,.9);border:1px solid rgba(170,21,27,0.15);border-radius:0;padding:10px 14px;font-size:11px}
-#legend h3{color:#F1BF00;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+#legend h3{color:#F1BF00;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;cursor:pointer}
 .leg-item{display:flex;align-items:center;gap:6px;margin:3px 0;color:#6B5D4D}
 .leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 #controls{position:fixed;bottom:12px;right:12px;z-index:100;display:flex;flex-direction:column;gap:6px}
@@ -37,26 +37,38 @@ body{background:#0A0A0A;color:#F0E6D0;font-family:'Segoe UI',system-ui,sans-seri
 .rtab.active{background:#AA151B;color:#F0E6D0}
 .rtab:hover:not(.active){color:#F1BF00}
 @media(max-width:600px){
-  #legend{font-size:10px;padding:6px 10px;max-width:140px}
+  #legend{font-size:10px;padding:6px 10px;max-width:140px;bottom:8px;left:8px}
+  #legend h3{cursor:pointer}
+  #legend .leg-item{display:none}
+  #legend.expanded .leg-item{display:flex}
   #stats{font-size:10px;top:50px;right:6px;padding:4px 8px}
-  #region-tabs{top:48px;gap:2px;padding:2px}
-  .rtab{padding:3px 8px;font-size:10px}
+  #region-tabs{top:48px;gap:2px;padding:2px;overflow-x:auto;max-width:90vw;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  #region-tabs::-webkit-scrollbar{display:none}
+  .rtab{padding:4px 10px;font-size:10px;white-space:nowrap;min-height:36px}
+  #controls button{width:44px;height:44px;font-size:20px}
+  .nav-toggle{top:8px;right:8px;width:44px;height:44px}
+}
+@media(max-width:480px){
+  .site-nav a{font-size:.82rem;padding:.5rem .7rem;min-height:44px;display:flex;align-items:center}
 }
 
 .flag-bar{height:4px;background:linear-gradient(180deg,#AA151B 33%,#F1BF00 33% 66%,#AA151B 66%)}
-.site-nav{background:#0A0A0A;border-bottom:1px solid rgba(170,21,27,0.15);padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
+.site-nav{background:rgba(10,10,10,.95);border-bottom:1px solid rgba(170,21,27,0.15);padding:.5rem 1.5rem;display:none;align-items:center;gap:1rem;flex-wrap:wrap;position:fixed;top:0;left:0;right:0;z-index:200}
+.site-nav.show{display:flex}
 .site-nav .brand{font-family:'DM Serif Display',serif;color:#F0E6D0;font-size:1.1rem;font-weight:400;text-decoration:none;margin-right:auto}
 .site-nav .brand-date{font-family:Inter,sans-serif;font-size:.6rem;color:#AA151B;font-weight:700;letter-spacing:.15em;margin-left:.5rem}
 .site-nav a{color:#6B5D4D;text-decoration:none;font-size:.82rem;padding:.35rem .7rem;transition:all .15s}
 .site-nav a:hover{color:#F0E6D0}
 .site-nav a.active{color:#F1BF00}
+.nav-toggle{position:fixed;top:10px;right:12px;z-index:201;background:rgba(10,10,10,.85);border:1px solid rgba(170,21,27,0.3);color:#F0E6D0;width:36px;height:36px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.nav-toggle:hover{border-color:#F1BF00;color:#F1BF00}
 @media(max-width:480px){.site-nav{padding:.4rem .8rem;gap:.4rem}.site-nav .brand{font-size:.95rem;width:100%}.site-nav a{font-size:.75rem;padding:.25rem .5rem}}
 
 </style>
 </head>
 <body>
-<div class="flag-bar"></div>
-<nav class="site-nav">
+<button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('site-nav').classList.toggle('show');this.textContent=document.getElementById('site-nav').classList.contains('show')?'✕':'☰'">☰</button>
+<nav class="site-nav" id="site-nav">
 <a href="index.html" class="brand">Siglo de Oro <span class="brand-date">1532·2032</span></a>
 <a href="index.html">Colección</a>
 <a href="cronologia.html">Cronología</a>
@@ -739,6 +751,22 @@ function resetPanel(){
   }, 300);
 }
 })();
+
+// Legend toggle on mobile
+if(window.innerWidth <= 600) {
+  const leg = document.getElementById('legend');
+  if(leg) {
+    const h3 = leg.querySelector('h3');
+    if(h3) {
+      leg.classList.add('expanded');
+      h3.textContent += ' ▾';
+      h3.addEventListener('click', () => {
+        leg.classList.toggle('expanded');
+        h3.textContent = leg.classList.contains('expanded') ? h3.textContent.replace('▸','▾') : h3.textContent.replace('▾','▸');
+      });
+    }
+  }
+}
 
 </script>
 </body>

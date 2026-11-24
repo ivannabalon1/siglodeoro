@@ -65,6 +65,24 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
 .site-nav a:hover { color: var(--marfil); }
 .site-nav a.active { color: var(--gualda); }
 
+/* Nav toggle (hidden on desktop) */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--borde);
+    color: var(--marfil);
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color .15s;
+}
+.nav-toggle:hover { border-color: var(--rojo); color: var(--gualda); }
+.nav-links { display: contents; }
+
 /* Hero */
 .hero {
     padding: 4rem 1.5rem 3rem;
@@ -97,12 +115,124 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
 }
 
 /* TOC */
+/* Innovation nav links */
+.inn-nav {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--borde);
+}
+.inn-nav a {
+    color: var(--cuero);
+    text-decoration: none;
+    font-size: .78rem;
+    transition: color .15s;
+}
+.inn-nav a:hover { color: var(--gualda); }
+
+/* Innovation dialog */
+.inn-dialog-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.88);
+    z-index: 1000;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow-y: auto;
+}
+.inn-dialog {
+    background: var(--negro);
+    border: 1px solid var(--borde);
+    max-width: 800px;
+    width: 100%;
+    padding: 2rem 2rem 2.5rem;
+    position: relative;
+}
+.inn-dialog-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: 1px solid var(--borde);
+    color: var(--marfil);
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+.inn-dialog-close:hover { border-color: var(--rojo); color: var(--gualda); }
+.inn-dialog-nav {
+    display: flex;
+    justify-content: center;
+    gap: .8rem;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--borde);
+}
+.inn-dialog-navbtn {
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    color: var(--cuero);
+    font-family: Inter, sans-serif;
+    font-size: .78rem;
+    padding: .5rem 1rem;
+    cursor: pointer;
+    transition: all .15s;
+    min-height: 44px;
+}
+.inn-dialog-navbtn:hover { border-color: var(--rojo); color: var(--marfil); }
+@media(max-width:600px) {
+    .inn-dialog { padding: 1.5rem 1rem 2rem; }
+    .inn-dialog-overlay { padding: 1rem .5rem; }
+}
+
+/* View toggle */
+.view-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .4rem;
+    padding: 1rem 1.5rem 0;
+}
+.vt-label {
+    color: var(--cuero);
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-right: .3rem;
+}
+.vt-btn {
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    color: var(--cuero);
+    font-family: Inter, sans-serif;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: .4rem 1.2rem;
+    cursor: pointer;
+    transition: all .15s;
+}
+.vt-btn:hover { border-color: var(--rojo); color: var(--marfil); }
+.vt-btn.active { border-color: var(--gualda); color: var(--gualda); background: rgba(241,191,0,.08); }
+
 .toc-wrapper {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
     border-bottom: 1px solid var(--borde);
+    display: none;
 }
+.toc-wrapper.show { display: block; }
 .toc-toggle {
     background: none;
     border: 1px solid var(--borde);
@@ -353,17 +483,74 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
 }
 .back-top.show { display: flex; }
 
-/* Mobile */
-@media (max-width: 600px) {
-    .hero h1 { font-size: 1.8rem; }
-    .hero .subtitle { font-size: 1rem; }
-    .toc-content { column-count: 1; }
-    .inn-num { font-size: 2.5rem; }
-    .inn-header h2 { font-size: 1.4rem; }
-    .inn-chain { padding-left: 1rem; }
-    .site-nav { padding: .4rem .8rem; gap: .5rem; }
+/* Responsive — tablet */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .hero .intro { font-size: .85rem; }
+    .inn-header h2 { font-size: 1.5rem; }
+}
+
+/* Responsive — phone */
+@media (max-width: 480px) {
+    /* Hamburger nav */
+    .nav-toggle { display: flex; }
+    .nav-links { display: none; width: 100%; flex-direction: column; gap: .2rem; padding-top: .5rem; border-top: 1px solid var(--borde); }
+    .nav-links.show { display: flex; }
+    .site-nav { padding: .5rem .8rem; gap: .4rem; }
     .site-nav .brand { font-size: .95rem; }
-    .content { padding: 0 1rem 3rem; }
+    .site-nav .brand-date { display: none; }
+    .site-nav a { font-size: .82rem; padding: .5rem .7rem; min-height: 44px; display: flex; align-items: center; }
+
+    /* Hero */
+    .hero { padding: 2rem 1rem 1.5rem; }
+    .hero h1 { font-size: 1.6rem; }
+    .hero .subtitle { font-size: .92rem; }
+    .hero .intro { font-size: .8rem; line-height: 1.6; }
+
+    /* Content */
+    .content { padding: 0 .8rem 2rem; }
+    .toc-content { column-count: 1; }
+
+    /* Innovation articles */
+    .inn-num { font-size: 2.5rem; }
+    .inn-header h2 { font-size: 1.3rem; }
+    .inn-chain { padding-left: .8rem; }
+    .inn-chain p { font-size: .82rem; }
+    .inn-narrativo p { font-size: .88rem; line-height: 1.7; text-align: left; }
+    .inn-hoy { padding: .8rem 1rem; }
+    .inn-hoy p { font-size: .82rem; }
+    .innovation { padding: 2rem 0; }
+
+    /* Inn nav links — stack */
+    .inn-nav { flex-direction: column; align-items: center; gap: .6rem; }
+    .inn-nav a { min-height: 44px; display: flex; align-items: center; }
+
+    /* Inn dialog — fullscreen */
+    .inn-dialog-overlay { padding: 0; }
+    .inn-dialog { max-width: 100%; height: 100%; padding: 1.2rem 1rem 2rem; overflow-y: auto; }
+    .inn-dialog-close { width: 44px; height: 44px; font-size: 1.2rem; top: .5rem; right: .5rem; }
+
+    /* View toggle */
+    .vt-btn { padding: .45rem 1rem; font-size: .7rem; min-height: 44px; }
+
+    /* Flag bar */
+    .flag-bar { display: none; }
+
+    /* Family filters — horizontal scroll with fade hint */
+    .family-filters { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; -webkit-mask-image: linear-gradient(to right, black 85%, transparent); mask-image: linear-gradient(to right, black 85%, transparent); }
+    .family-filters::-webkit-scrollbar { display: none; }
+    .family-btn { flex-shrink: 0; white-space: nowrap; min-height: 44px; }
+
+    /* Slider cards — hide summary */
+    .sc-summary { display: none; }
+    .sc-title { font-size: .88rem; }
+
+    /* No justify on mobile */
+    .inn-chain p, .inn-hoy p { text-align: left; }
+
+    /* Footer */
+    .site-footer { padding: 2rem 1rem; }
+    .site-footer .legado { font-size: 1.1rem; }
 }
 
 /* Innovation Slider */
@@ -462,10 +649,15 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
     line-height: 1.5;
     flex: 1;
 }
-@media (max-width: 600px) {
-    .slider-card { flex: 0 0 180px; min-height: 160px; padding: 1rem .8rem; }
-    .sc-title { font-size: .85rem; }
-    .slider-section { padding: 1.5rem 1rem 1rem; }
+@media (max-width: 480px) {
+    .slider-card { flex: 0 0 160px; min-height: 150px; padding: .8rem .7rem; gap: .3rem; }
+    .sc-icon { font-size: 1.3rem; }
+    .sc-title { font-size: .8rem; }
+    .sc-summary { font-size: .65rem; }
+    .sc-campo { font-size: .58rem; }
+    .slider-section { padding: 1rem .8rem .8rem; }
+    .slider-header h2 { font-size: 1rem; }
+    .slider-arrow { width: 44px; height: 44px; }
 }
 
 
@@ -504,9 +696,10 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
 .innovation.family-hidden { display: none; }
 .slider-card.family-hidden { display: none; }
 .toc-content a.family-hidden { display: none; }
-@media (max-width: 600px) {
-    .family-filters { padding: .8rem 1rem .3rem; gap: .3rem; }
-    .family-btn { padding: .25rem .6rem; font-size: .62rem; }
+@media (max-width: 480px) {
+    .family-filters { padding: .6rem .6rem .3rem; gap: .25rem; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; justify-content: flex-start; }
+    .family-filters::-webkit-scrollbar { display: none; }
+    .family-btn { padding: .4rem .7rem; font-size: .62rem; white-space: nowrap; min-height: 36px; flex-shrink: 0; }
 }
 
 </style>
@@ -517,13 +710,16 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
 <div class="flag-bar"></div>
 
 <!-- Navigation -->
-<nav class="site-nav">
+<nav class="site-nav" id="site-nav">
     <a href="index.html" class="brand">Siglo de Oro <span class="brand-date">1532 &middot; 2032</span></a>
+    <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('show');this.textContent=document.getElementById('nav-links').classList.contains('show')?'✕':'☰'" aria-label="Menú">☰</button>
+    <div class="nav-links" id="nav-links">
     <a href="index.html">Inicio</a>
     <a href="cronologia.html">Cronolog&iacute;a</a>
     <a href="mapa.html">Mapa</a>
     <a href="grafo.html">Grafo</a>
     <a href="innovaciones.html" class="active">Innovaciones</a>
+    </div>
 </nav>
 
 <!-- Hero -->
@@ -543,7 +739,13 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
   <button class="family-btn" data-family="pensamiento">Pensamiento y educación</button>
 </div>
 
-<section class="slider-section">
+<div class="view-toggle" id="view-toggle">
+  <span class="vt-label">Vista:</span>
+  <button class="vt-btn active" data-view="cards" onclick="switchView('cards')">Cards</button>
+  <button class="vt-btn" data-view="indice" onclick="switchView('indice')">Índice</button>
+</div>
+
+<section class="slider-section" id="slider-section">
 <div class="slider-header">
   <h2>Explorar por concepto</h2>
   <div class="slider-arrows">
@@ -552,210 +754,210 @@ body { background: var(--negro); color: var(--marfil); font-family: Inter, sans-
   </div>
 </div>
 <div class="slider-track" id="slider-track">
-<div class="slider-card" data-inn="01" data-family="derecho" onclick="document.getElementById('inn-01').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="01" data-family="derecho" onclick="openInnDialog('01')">
   <div class="sc-icon">⚖️</div>
   <div class="sc-num">01</div>
   <div class="sc-title">Derecho Internacional Moderno</div>
   <div class="sc-campo">Derecho</div>
   <div class="sc-summary">En 1532, en un aula de la Universidad de Salamanca, el fraile dominico Francisco de Vitoria (c. 1483-1546) pronunció una lección…</div>
 </div>
-<div class="slider-card" data-inn="02" data-family="derecho" onclick="document.getElementById('inn-02').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="02" data-family="derecho" onclick="openInnDialog('02')">
   <div class="sc-icon">⚖️</div>
   <div class="sc-num">02</div>
   <div class="sc-title">Derechos Humanos Universales</div>
   <div class="sc-campo">Derecho / Ética</div>
   <div class="sc-summary">El 21 de diciembre de 1511, un fraile dominico llamado Antonio de Montesinos subió al púlpito de una iglesia de paja en Santo…</div>
 </div>
-<div class="slider-card" data-inn="03" data-family="literatura" onclick="document.getElementById('inn-03').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="03" data-family="literatura" onclick="openInnDialog('03')">
   <div class="sc-icon">✒️</div>
   <div class="sc-num">03</div>
   <div class="sc-title">La Novela Moderna</div>
   <div class="sc-campo">Literatura</div>
   <div class="sc-summary">En 1554, un autor anónimo publicó en España un librito que inventó un género: Lazarillo de Tormes. Era la historia de un niño…</div>
 </div>
-<div class="slider-card" data-inn="04" data-family="literatura" onclick="document.getElementById('inn-04').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="04" data-family="literatura" onclick="openInnDialog('04')">
   <div class="sc-icon">🎭</div>
   <div class="sc-num">04</div>
   <div class="sc-title">El Teatro Moderno</div>
   <div class="sc-campo">Artes escénicas</div>
   <div class="sc-summary">En 1609, Lope de Vega publicó el Arte nuevo de hacer comedias, un manifiesto que rompía con dos mil años de ortodoxia…</div>
 </div>
-<div class="slider-card" data-inn="05" data-family="economia" onclick="document.getElementById('inn-05').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="05" data-family="economia" onclick="openInnDialog('05')">
   <div class="sc-icon">🌍</div>
   <div class="sc-num">05</div>
   <div class="sc-title">La Globalización: la Primera Economía-Mundo</div>
   <div class="sc-campo">Economía / Geopolítica</div>
   <div class="sc-summary">El 6 de septiembre de 1522, una sola nave — la Victoria — entró en el puerto de Sanlúcar de Barrameda con 18 hombres famélicos a…</div>
 </div>
-<div class="slider-card" data-inn="06" data-family="exploracion" onclick="document.getElementById('inn-06').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="06" data-family="exploracion" onclick="openInnDialog('06')">
   <div class="sc-icon">🏛️</div>
   <div class="sc-num">06</div>
   <div class="sc-title">Urbanismo Planificado: el Primer Código Urbanístico del Mundo</div>
   <div class="sc-campo">Urbanismo / Arquitectura</div>
   <div class="sc-summary">El 13 de julio de 1573, Felipe II firmó las Ordenanzas de descubrimiento, nueva población y pacificación de las Indias: 148…</div>
 </div>
-<div class="slider-card" data-inn="07" data-family="economia" onclick="document.getElementById('inn-07').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="07" data-family="economia" onclick="openInnDialog('07')">
   <div class="sc-icon">💰</div>
   <div class="sc-num">07</div>
   <div class="sc-title">Teoría Cuantitativa del Dinero y Economía Moderna</div>
   <div class="sc-campo">Economía</div>
   <div class="sc-summary">En 1556, el canonista navarro Martín de Azpilcueta — conocido en toda Europa como &#x27;Doctor Navarrus&#x27;, consultado por papas y reyes…</div>
 </div>
-<div class="slider-card" data-inn="08" data-family="literatura" onclick="document.getElementById('inn-08').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="08" data-family="literatura" onclick="openInnDialog('08')">
   <div class="sc-icon">✒️</div>
   <div class="sc-num">08</div>
   <div class="sc-title">Realismo Social en la Literatura</div>
   <div class="sc-campo">Literatura</div>
   <div class="sc-summary">En 1554, en algún lugar de España, alguien publicó anónimamente un librito que inventó el realismo social: Lazarillo de Tormes.…</div>
 </div>
-<div class="slider-card" data-inn="09" data-family="literatura" onclick="document.getElementById('inn-09').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="09" data-family="literatura" onclick="openInnDialog('09')">
   <div class="sc-icon">🎨</div>
   <div class="sc-num">09</div>
   <div class="sc-title">Arte Moderno: de la Representación a la Expresión</div>
   <div class="sc-campo">Arte</div>
   <div class="sc-summary">En 1865, un pintor francés de 33 años llamado Édouard Manet visitó el Museo del Prado en Madrid y quedó transformado. Frente a…</div>
 </div>
-<div class="slider-card" data-inn="10" data-family="ciencia" onclick="document.getElementById('inn-10').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="10" data-family="ciencia" onclick="openInnDialog('10')">
   <div class="sc-icon">⚕️</div>
   <div class="sc-num">10</div>
   <div class="sc-title">Salud Pública Global y Vacunación Universal</div>
   <div class="sc-campo">Medicina</div>
   <div class="sc-summary">El 30 de noviembre de 1803, la corbeta María Pita zarpó de La Coruña con 22 niños huérfanos a bordo. Llevaban en sus brazos algo…</div>
 </div>
-<div class="slider-card" data-inn="11" data-family="ciencia" onclick="document.getElementById('inn-11').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="11" data-family="ciencia" onclick="openInnDialog('11')">
   <div class="sc-icon">🌿</div>
   <div class="sc-num">11</div>
   <div class="sc-title">BIODIVERSIDAD Y PRECURSORES DE LA EVOLUCIÓN</div>
   <div class="sc-campo">Ciencias naturales</div>
   <div class="sc-summary">En 1590, un jesuita de Medina del Campo llamado José de Acosta (1540-1600) publicó en Sevilla la Historia natural y moral de las…</div>
 </div>
-<div class="slider-card" data-inn="12" data-family="pensamiento" onclick="document.getElementById('inn-12').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="12" data-family="pensamiento" onclick="openInnDialog('12')">
   <div class="sc-icon">👥</div>
   <div class="sc-num">12</div>
   <div class="sc-title">ETNOGRAFÍA Y ANTROPOLOGÍA MODERNA</div>
   <div class="sc-campo">Ciencias sociales</div>
   <div class="sc-summary">En algún momento entre 1545 y 1590, un franciscano de Sahagún (León) llamado Bernardino de Sahagún (c. 1499-1590) completó lo que…</div>
 </div>
-<div class="slider-card" data-inn="13" data-family="pensamiento" onclick="document.getElementById('inn-13').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="13" data-family="pensamiento" onclick="openInnDialog('13')">
   <div class="sc-icon">🗣️</div>
   <div class="sc-num">13</div>
   <div class="sc-title">LINGÜÍSTICA: LA GRAMÁTICA DE LAS LENGUAS VIVAS</div>
   <div class="sc-campo">Lingüística</div>
   <div class="sc-summary">El 18 de agosto de 1492 — semanas después de que Colón zarpara de Palos —, un profesor de retórica de Lebrija llamado Antonio de…</div>
 </div>
-<div class="slider-card" data-inn="14" data-family="ciencia" onclick="document.getElementById('inn-14').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="14" data-family="ciencia" onclick="openInnDialog('14')">
   <div class="sc-icon">🧭</div>
   <div class="sc-num">14</div>
   <div class="sc-title">GEODESIA: LA FORMA DE LA TIERRA Y EL SISTEMA MÉTRICO</div>
   <div class="sc-campo">Ciencia / Geodesia</div>
   <div class="sc-summary">En 1735, dos jóvenes oficiales españoles — Jorge Juan, de 22 años, y Antonio de Ulloa, de 19 — se unieron a la Expedición…</div>
 </div>
-<div class="slider-card" data-inn="15" data-family="economia" onclick="document.getElementById('inn-15').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="15" data-family="economia" onclick="openInnDialog('15')">
   <div class="sc-icon">🤝</div>
   <div class="sc-num">15</div>
   <div class="sc-title">EL ESTADO DEL BIENESTAR: ASISTENCIA SOCIAL PÚBLICA</div>
   <div class="sc-campo">Política social</div>
   <div class="sc-summary">En 1526, un humanista valenciano exiliado en Brujas llamado Juan Luis Vives (1492-1540) publicó De subventione pauperum, un…</div>
 </div>
-<div class="slider-card" data-inn="16" data-family="economia" onclick="document.getElementById('inn-16').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="16" data-family="economia" onclick="openInnDialog('16')">
   <div class="sc-icon">💰</div>
   <div class="sc-num">16</div>
   <div class="sc-title">ECONOMÍA DE MERCADO: TEORÍA DEL DINERO Y EL PRECIO JUSTO</div>
   <div class="sc-campo">Economía</div>
   <div class="sc-summary">En 1556, un canonista navarro de 64 años llamado Martín de Azpilcueta (1492-1586) publicó en Salamanca el Comentario resolutorio…</div>
 </div>
-<div class="slider-card" data-inn="17" data-family="pensamiento" onclick="document.getElementById('inn-17').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="17" data-family="pensamiento" onclick="openInnDialog('17')">
   <div class="sc-icon">🕯️</div>
   <div class="sc-num">17</div>
   <div class="sc-title">MÍSTICA E INTROSPECCIÓN PSICOLÓGICA</div>
   <div class="sc-campo">Psicología / Espiritualidad</div>
   <div class="sc-summary">En 1577, una monja carmelita de 62 años encerrada en un convento de Toledo escribió por obediencia — sus confesores se lo…</div>
 </div>
-<div class="slider-card" data-inn="18" data-family="exploracion" onclick="document.getElementById('inn-18').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="18" data-family="exploracion" onclick="openInnDialog('18')">
   <div class="sc-icon">🗺️</div>
   <div class="sc-num">18</div>
   <div class="sc-title">CARTOGRAFÍA OCEÁNICA: EL PRIMER SISTEMA ESTATAL DE MAPAS</div>
   <div class="sc-campo">Ciencia / Navegación</div>
   <div class="sc-summary">En 1503, la Corona española creó en Sevilla la Casa de Contratación, una institución sin precedente que combinaba funciones de…</div>
 </div>
-<div class="slider-card" data-inn="19" data-family="derecho" onclick="document.getElementById('inn-19').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="19" data-family="derecho" onclick="openInnDialog('19')">
   <div class="sc-icon">⚖️</div>
   <div class="sc-num">19</div>
   <div class="sc-title">GUERRA JUSTA Y DERECHO INTERNACIONAL HUMANITARIO</div>
   <div class="sc-campo">Derecho / Ética</div>
   <div class="sc-summary">En 1538, Francisco de Vitoria pronunció en Salamanca la relectio De iure belli, una lección sobre los límites de la guerra que…</div>
 </div>
-<div class="slider-card" data-inn="20" data-family="derecho" onclick="document.getElementById('inn-20').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="20" data-family="derecho" onclick="openInnDialog('20')">
   <div class="sc-icon">📜</div>
   <div class="sc-num">20</div>
   <div class="sc-title">SOBERANÍA POPULAR: DEL AULA DE SALAMANCA AL ARTÍCULO 21 DE LA DUDH</div>
   <div class="sc-campo">Filosofía política / Derecho constitucional</div>
   <div class="sc-summary">En 1188, Alfonso IX convocó en León unas Cortes que la UNESCO reconoció en 2013 como &#x27;la manifestación documental más antigua del…</div>
 </div>
-<div class="slider-card" data-inn="21" data-family="ciencia" onclick="document.getElementById('inn-21').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="21" data-family="ciencia" onclick="openInnDialog('21')">
   <div class="sc-icon">⚕️</div>
   <div class="sc-num">21</div>
   <div class="sc-title">Cirugía moderna y medicina experimental</div>
   <div class="sc-campo">Medicina</div>
   <div class="sc-summary">En Córdoba, hacia el año 1000, un médico llamado Abu al-Qasim al-Zahrawi —Abulcasis para los europeos— completó el Kitab…</div>
 </div>
-<div class="slider-card" data-inn="22" data-family="ciencia" onclick="document.getElementById('inn-22').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="22" data-family="ciencia" onclick="openInnDialog('22')">
   <div class="sc-icon">⚡</div>
   <div class="sc-num">22</div>
   <div class="sc-title">Física de la caída libre y la aceleración uniforme</div>
   <div class="sc-campo">Física</div>
   <div class="sc-summary">En 1551, un fraile dominico de Salamanca llamado Domingo de Soto (1494-1560) publicó una idea que tardaría medio siglo en…</div>
 </div>
-<div class="slider-card" data-inn="23" data-family="ciencia" onclick="document.getElementById('inn-23').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="23" data-family="ciencia" onclick="openInnDialog('23')">
   <div class="sc-icon">🔭</div>
   <div class="sc-num">23</div>
   <div class="sc-title">Astronomía de precisión y navegación oceánica</div>
   <div class="sc-campo">Astronomía / Navegación</div>
   <div class="sc-summary">En la Toledo del siglo XI, un astrónomo llamado Abu Ishaq Ibrahim ibn Yahya al-Naqqash al-Zarqali — Azarquiel para los europeos —…</div>
 </div>
-<div class="slider-card" data-inn="24" data-family="pensamiento" onclick="document.getElementById('inn-24').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="24" data-family="pensamiento" onclick="openInnDialog('24')">
   <div class="sc-icon">📚</div>
   <div class="sc-num">24</div>
   <div class="sc-title">El sistema educativo moderno</div>
   <div class="sc-campo">Educación</div>
   <div class="sc-summary">En 1599, la Compañía de Jesús publicó la Ratio Studiorum, el primer plan educativo estandarizado de la historia: un sistema…</div>
 </div>
-<div class="slider-card" data-inn="25" data-family="literatura" onclick="document.getElementById('inn-25').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="25" data-family="literatura" onclick="openInnDialog('25')">
   <div class="sc-icon">♀️</div>
   <div class="sc-num">25</div>
   <div class="sc-title">Voces femeninas y proto-feminismo literario</div>
   <div class="sc-campo">Literatura / Derechos de la mujer</div>
   <div class="sc-summary">En 1637, en la España de Felipe IV, una mujer llamada María de Zayas y Sotomayor publicó sus Novelas amorosas y ejemplares, donde…</div>
 </div>
-<div class="slider-card" data-inn="26" data-family="literatura" onclick="document.getElementById('inn-26').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="26" data-family="literatura" onclick="openInnDialog('26')">
   <div class="sc-icon">🎵</div>
   <div class="sc-num">26</div>
   <div class="sc-title">Polifonía sacra y el nacimiento de la música devocional moderna</div>
   <div class="sc-campo">Música</div>
   <div class="sc-summary">En 1544, una colección de misas impresas en Roma llevó la firma de un sevillano: Cristóbal de Morales (c. 1500-1553) se convirtió…</div>
 </div>
-<div class="slider-card" data-inn="27" data-family="ciencia" onclick="document.getElementById('inn-27').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="27" data-family="ciencia" onclick="openInnDialog('27')">
   <div class="sc-icon">⚗️</div>
   <div class="sc-num">27</div>
   <div class="sc-title">El wolframio y la ciencia de materiales moderna</div>
   <div class="sc-campo">Química / Industria</div>
   <div class="sc-summary">En 1783, en un laboratorio del Real Seminario de Vergara — una escuela técnica financiada por la Sociedad Bascongada de Amigos…</div>
 </div>
-<div class="slider-card" data-inn="28" data-family="economia" onclick="document.getElementById('inn-28').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="28" data-family="economia" onclick="openInnDialog('28')">
   <div class="sc-icon">🌾</div>
   <div class="sc-num">28</div>
   <div class="sc-title">La revolución alimentaria global (Intercambio Colombino)</div>
   <div class="sc-campo">Alimentación / Agricultura</div>
   <div class="sc-summary">Ninguna innovación del Siglo de Oro cambió más la vida cotidiana de más personas que algo que nadie planeó: el intercambio de…</div>
 </div>
-<div class="slider-card" data-inn="29" data-family="exploracion" onclick="document.getElementById('inn-29').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="29" data-family="exploracion" onclick="openInnDialog('29')">
   <div class="sc-icon">🏗️</div>
   <div class="sc-num">29</div>
   <div class="sc-title">Arquitectura como lenguaje de Estado</div>
   <div class="sc-campo">Arquitectura</div>
   <div class="sc-summary">En 1563, Felipe II encargó a Juan de Herrera un edificio que fuera a la vez palacio, monasterio, panteón y biblioteca: El…</div>
 </div>
-<div class="slider-card" data-inn="30" data-family="exploracion" onclick="document.getElementById('inn-30').scrollIntoView({behavior:'smooth',block:'start'})">
+<div class="slider-card" data-inn="30" data-family="exploracion" onclick="openInnDialog('30')">
   <div class="sc-icon">⚓</div>
   <div class="sc-num">30</div>
   <div class="sc-title">Ingeniería naval y los arsenales del Rey</div>
@@ -1845,6 +2047,59 @@ function resetPanel(){
 
 
 
+// Innovation dialog from card click
+function openInnDialog(num) {
+  const n = parseInt(num);
+  const artId = 'innovacion-' + n;
+  const article = document.getElementById(artId);
+  if (!article) return;
+  let overlay = document.getElementById('inn-dialog-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'inn-dialog-overlay';
+    overlay.className = 'inn-dialog-overlay';
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.style.display = 'none'; });
+    document.body.appendChild(overlay);
+  }
+  const prevNum = n > 1 ? String(n - 1).padStart(2, '0') : '';
+  const nextNum = n < 30 ? String(n + 1).padStart(2, '0') : '';
+  let navHtml = '<div class="inn-dialog-nav">';
+  if (prevNum) navHtml += `<button class="inn-dialog-navbtn" onclick="openInnDialog('${prevNum}')">◂ Anterior</button>`;
+  navHtml += `<button class="inn-dialog-navbtn" onclick="document.getElementById('inn-dialog-overlay').style.display='none'">Cerrar</button>`;
+  if (nextNum) navHtml += `<button class="inn-dialog-navbtn" onclick="openInnDialog('${nextNum}')">Siguiente ▸</button>`;
+  navHtml += '</div>';
+  overlay.innerHTML = '<div class="inn-dialog"><button class="inn-dialog-close" onclick="document.getElementById(\'inn-dialog-overlay\').style.display=\'none\'">✕</button>' + article.innerHTML + navHtml + '</div>';
+  overlay.style.display = 'flex';
+  overlay.scrollTop = 0;
+}
+
+// View toggle: Cards vs Índice
+function switchView(view) {
+  const slider = document.getElementById('slider-section');
+  const toc = document.querySelector('.toc-wrapper');
+  const content = document.querySelector('.content');
+  const btns = document.querySelectorAll('.vt-btn');
+  btns.forEach(b => b.classList.toggle('active', b.dataset.view === view));
+  if (view === 'cards') {
+    slider.style.display = '';
+    toc.classList.remove('show');
+    content.style.display = 'none';
+  } else {
+    slider.style.display = 'none';
+    toc.classList.add('show');
+    content.style.display = '';
+    // Auto-open the TOC content
+    const tocContent = document.getElementById('toc');
+    const tocToggle = document.querySelector('.toc-toggle');
+    if (tocContent && !tocContent.classList.contains('show')) {
+      tocContent.classList.add('show');
+      if (tocToggle) tocToggle.classList.add('open');
+    }
+  }
+}
+// Default: hide articles (cards view is default)
+document.querySelector('.content').style.display = 'none';
+
 // Slider navigation
 const track = document.getElementById('slider-track');
 document.getElementById('sl-prev').addEventListener('click', () => {
@@ -1910,6 +2165,21 @@ document.querySelectorAll('.family-btn').forEach(btn => {
             }
         });
     });
+});
+
+// Add nav links (up/down) to each innovation article
+document.querySelectorAll('.innovation').forEach((art, i, all) => {
+  const nav = document.createElement('div');
+  nav.className = 'inn-nav';
+  let html = '<a href="#" onclick="event.preventDefault();window.scrollTo({top:0,behavior:\'smooth\'})">▲ Subir al índice</a>';
+  if (i > 0) {
+    html = '<a href="#" onclick="event.preventDefault();document.getElementById(\'' + all[i-1].id + '\').scrollIntoView({behavior:\'smooth\'})">▲ Anterior</a>' + html;
+  }
+  if (i < all.length - 1) {
+    html += '<a href="#" onclick="event.preventDefault();document.getElementById(\'' + all[i+1].id + '\').scrollIntoView({behavior:\'smooth\'})">▼ Siguiente</a>';
+  }
+  nav.innerHTML = html;
+  art.appendChild(nav);
 });
 
 </script>
