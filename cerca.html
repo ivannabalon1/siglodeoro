@@ -16,6 +16,27 @@
 body{background:var(--negro);color:var(--marfil);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
 .flag-bar{height:4px;background:linear-gradient(180deg,#AA151B 33%,#F1BF00 33% 66%,#AA151B 66%)}
 
+.site-nav{background:var(--negro);border-bottom:1px solid var(--borde);padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
+.site-nav .brand{font-family:'DM Serif Display',serif;color:var(--marfil);font-size:1.1rem;font-weight:400;text-decoration:none;margin-right:auto;display:flex;align-items:baseline;gap:.5rem}
+.site-nav .brand-date{font-family:Inter,sans-serif;font-size:.6rem;color:var(--rojo);font-weight:700;letter-spacing:.15em}
+.negra{text-decoration:line-through;text-decoration-color:var(--rojo);text-decoration-thickness:3px}
+.site-nav a{color:var(--cuero);text-decoration:none;font-size:.82rem;padding:.35rem .7rem;transition:all .15s}
+.site-nav a:hover{color:var(--marfil)}
+.site-nav a.active{color:var(--gualda)}
+.nav-toggle{display:none;background:none;border:1px solid var(--borde);color:var(--marfil);width:40px;height:40px;font-size:1.2rem;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .15s}
+.nav-toggle:hover{border-color:var(--rojo);color:var(--gualda)}
+.nav-links{display:contents}
+@media (max-width:480px){
+  .flag-bar{display:none}
+  .nav-toggle{display:flex}
+  .nav-links{display:none;width:100%;flex-direction:column;gap:.2rem;padding-top:.5rem;border-top:1px solid var(--borde)}
+  .nav-links.show{display:flex}
+  .site-nav{padding:.5rem .8rem;gap:.4rem}
+  .site-nav .brand{font-size:.95rem}
+  .site-nav .brand-date{display:none}
+  .site-nav a{font-size:.82rem;padding:.5rem .7rem;min-height:44px;display:flex;align-items:center}
+}
+
 header{padding:2.4rem 1.5rem 1.6rem;text-align:center;border-bottom:1px solid var(--borde)}
 header h1{font-family:'DM Serif Display',serif;font-size:2.2rem;font-weight:400;color:var(--marfil);margin-bottom:.4rem}
 .motto{display:flex;align-items:center;gap:.6rem;justify-content:center;margin:.3rem 0 .8rem}
@@ -83,6 +104,19 @@ footer a{color:var(--gualda);text-decoration:none}
 </head>
 <body>
 <div class="flag-bar"></div>
+<nav class="site-nav" id="site-nav">
+<a href="index.html" class="brand">La Leyenda <span class="negra">Negra</span> <span class="brand-date">1532 · 2032</span></a>
+<button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('nav-links').classList.toggle('show');this.textContent=document.getElementById('nav-links').classList.contains('show')?'✕':'☰'" aria-label="Menú">☰</button>
+<div class="nav-links" id="nav-links">
+<a href="index.html">Innovaciones</a>
+<a href="cronologia.html">Cronología</a>
+<a href="autores.html">Colección</a>
+<a href="mapa.html">Mapa</a>
+<a href="grafo.html">Grafo</a>
+<a href="en-venta.html">Comprar</a>
+<a href="cerca.html" class="active">GPS</a>
+</div>
+</nav>
 <header>
   <h1>¿Qué tengo cerca?</h1>
   <div class="motto"><span>100 autores contra el mito</span></div>
