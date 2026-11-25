@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Grafo de Influencias — Siglo de Oro</title>
+<title>Grafo de Influencias — La Leyenda Negra</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#0a0a1a;color:#e0e0e0;overflow:hidden}
@@ -25,6 +25,7 @@ canvas{display:block}
 .site-nav.show{display:flex}
 .site-nav .brand{font-family:'DM Serif Display',serif;color:#F0E6D0;font-size:1.1rem;font-weight:400;text-decoration:none;margin-right:auto}
 .site-nav .brand-date{font-family:Inter,sans-serif;font-size:.6rem;color:#AA151B;font-weight:700;letter-spacing:.15em;margin-left:.5rem}
+  .negra{text-decoration:line-through;text-decoration-color:var(--rojo);text-decoration-thickness:3px}
 .site-nav a{color:#6B5D4D;text-decoration:none;font-size:.82rem;padding:.35rem .7rem;transition:all .15s}
 .site-nav a:hover{color:#F0E6D0}
 .site-nav a.active{color:#F1BF00}
@@ -53,12 +54,12 @@ canvas{display:block}
 <body>
 <button class="nav-toggle" id="nav-toggle" onclick="document.getElementById('site-nav').classList.toggle('show');this.textContent=document.getElementById('site-nav').classList.contains('show')?'✕':'☰'">☰</button>
 <nav class="site-nav" id="site-nav">
-<a href="index.html" class="brand">Siglo de Oro <span class="brand-date">1532·2032</span></a>
-<a href="index.html">Colección</a>
+<a href="index.html" class="brand">La Leyenda <span class="negra">Negra</span> <span class="brand-date">1532·2032</span></a>
+<a href="innovaciones.html">Innovaciones</a>
 <a href="cronologia.html">Cronología</a>
+<a href="index.html">Colección</a>
 <a href="mapa.html">Mapa</a>
 <a href="grafo.html" class="active">Grafo</a>
-<a href="innovaciones.html">Innovaciones</a>
 </nav>
 <div id="controls">
 <h2>Grafo de Influencias</h2>
