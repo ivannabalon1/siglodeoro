@@ -6,7 +6,7 @@
 <title>Mapa — La Leyenda Negra · Desmontada</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--negro:#0A0A0A;--rojo:#AA151B;--gualda:#F1BF00;--marfil:#F0E6D0;--cuero:#6B5D4D;--superficie:#12100C;--borde:rgba(170,21,27,0.15)}
+:root{--negro:#0A0A0A;--rojo:#AA151B;--rojo-texto:#E74047;--gualda:#F1BF00;--marfil:#F0E6D0;--cuero:#6B5D4D;--superficie:#12100C;--borde:rgba(170,21,27,0.15)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--negro);color:var(--marfil);font-family:Inter,sans-serif;overflow:hidden;height:100vh;width:100vw}
 #header{position:fixed;top:0;left:0;right:0;z-index:100;background:linear-gradient(180deg,rgba(10,10,10,.97),rgba(10,10,10,.7));padding:12px 20px;text-align:center;pointer-events:none}
@@ -69,7 +69,7 @@ body{background:var(--negro);color:var(--marfil);font-family:Inter,sans-serif;ov
 .site-nav{background:rgba(10,10,10,.95);border-bottom:1px solid var(--borde);padding:.5rem 1.5rem;display:none;align-items:center;gap:1rem;flex-wrap:wrap;position:fixed;top:0;left:0;right:0;z-index:200}
 .site-nav.show{display:flex}
 .site-nav .brand{font-family:'DM Serif Display',serif;color:var(--marfil);font-size:1.1rem;font-weight:400;text-decoration:none;margin-right:auto}
-.site-nav .brand-date{font-family:Inter,sans-serif;font-size:.6rem;color:var(--rojo);font-weight:700;letter-spacing:.15em;margin-left:.5rem}
+.site-nav .brand-date{font-family:Inter,sans-serif;font-size:.6rem;color:var(--rojo-texto);font-weight:700;letter-spacing:.15em;margin-left:.5rem}
 .negra{text-decoration:line-through;text-decoration-color:var(--rojo);text-decoration-thickness:3px}
 .site-nav a{color:var(--cuero);text-decoration:none;font-size:.82rem;padding:.35rem .7rem;transition:all .15s}
 .site-nav a:hover{color:var(--marfil)}
@@ -93,7 +93,7 @@ body{background:var(--negro);color:var(--marfil);font-family:Inter,sans-serif;ov
 <a href="index.html" class="brand">La Leyenda <span class="negra">Negra</span> <span class="brand-date">1532·2032</span></a>
 <a href="index.html">Innovaciones</a>
 <a href="cronologia.html">Cronología</a>
-<a href="autores.html">Colección</a>
+<a href="autores.html">Autores</a>
 <a href="mapa.html" class="active">Mapa</a>
 <a href="grafo.html">Grafo</a>
 <a href="en-venta.html">Comprar</a>

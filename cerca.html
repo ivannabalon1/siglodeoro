@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --negro:#0A0A0A;--rojo:#AA151B;--gualda:#F1BF00;--marfil:#F0E6D0;
+  --negro:#0A0A0A;--rojo:#AA151B;--rojo-texto:#E74047;--gualda:#F1BF00;--marfil:#F0E6D0;
   --cuero:#6B5D4D;--superficie:#12100C;--borde:rgba(170,21,27,0.15);
   --ultramar:#1A3048;--rojo-hover:#C4252F;
 }
@@ -18,7 +18,7 @@ body{background:var(--negro);color:var(--marfil);font-family:Inter,sans-serif;-w
 
 .site-nav{background:var(--negro);border-bottom:1px solid var(--borde);padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
 .site-nav .brand{font-family:'DM Serif Display',serif;color:var(--marfil);font-size:1.1rem;font-weight:400;text-decoration:none;margin-right:auto;display:flex;align-items:baseline;gap:.5rem}
-.site-nav .brand-date{font-family:Inter,sans-serif;font-size:.6rem;color:var(--rojo);font-weight:700;letter-spacing:.15em}
+.site-nav .brand-date{font-family:Inter,sans-serif;font-size:.6rem;color:var(--rojo-texto);font-weight:700;letter-spacing:.15em}
 .negra{text-decoration:line-through;text-decoration-color:var(--rojo);text-decoration-thickness:3px}
 .site-nav a{color:var(--cuero);text-decoration:none;font-size:.82rem;padding:.35rem .7rem;transition:all .15s}
 .site-nav a:hover{color:var(--marfil)}
@@ -42,7 +42,7 @@ header h1{font-family:'DM Serif Display',serif;font-size:2.2rem;font-weight:400;
 .motto{display:flex;align-items:center;gap:.6rem;justify-content:center;margin:.3rem 0 .8rem}
 .motto::before,.motto::after{content:'';flex:0 0 40px;height:1px;background:linear-gradient(90deg,transparent,var(--rojo))}
 .motto::after{background:linear-gradient(90deg,var(--rojo),transparent)}
-.motto span{font-size:.68rem;letter-spacing:.22em;color:var(--rojo);font-weight:700;text-transform:uppercase}
+.motto span{font-size:.68rem;letter-spacing:.22em;color:var(--rojo-texto);font-weight:700;text-transform:uppercase}
 .subtitle{color:var(--cuero);max-width:560px;margin:0 auto;font-size:.88rem;line-height:1.6}
 
 .locate-wrap{max-width:640px;margin:0 auto;padding:2rem 1.5rem;text-align:center}
@@ -55,7 +55,7 @@ header h1{font-family:'DM Serif Display',serif;font-size:2.2rem;font-weight:400;
 #locateBtn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(170,21,27,.45)}
 #locateBtn:disabled{opacity:.5;cursor:wait}
 #status{margin-top:1rem;font-size:.85rem;color:var(--cuero);min-height:1.2em}
-#status.err{color:var(--rojo)}
+#status.err{color:var(--rojo-texto)}
 #status.ok{color:var(--gualda)}
 
 .filters{max-width:1100px;margin:0 auto;padding:0 1.5rem 1rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:center}
@@ -110,7 +110,7 @@ footer a{color:var(--gualda);text-decoration:none}
 <div class="nav-links" id="nav-links">
 <a href="index.html">Innovaciones</a>
 <a href="cronologia.html">Cronología</a>
-<a href="autores.html">Colección</a>
+<a href="autores.html">Autores</a>
 <a href="mapa.html">Mapa</a>
 <a href="grafo.html">Grafo</a>
 <a href="en-venta.html">Comprar</a>
@@ -276,5 +276,6 @@ function render(){
   }).join('');
 }
 </script>
+<script src="feedback-widget.js"></script>
 </body>
 </html>
